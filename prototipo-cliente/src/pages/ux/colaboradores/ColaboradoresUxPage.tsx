@@ -7,6 +7,7 @@ import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass, protoSelectClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
+import { UX_COLABORADORES } from '../../../guidance/uxSections'
 
 function estadoBadge(label: string) {
   const map: Record<string, string> = {
@@ -248,6 +249,7 @@ export function ColaboradoresUxPage() {
         title="Ficha RH de la organización"
         description="La ficha RH de tu organización. Consulta, importa y edita masivamente la información de todos tus colaboradores activos e inactivos."
         icon={UsersIcon}
+        guidance={UX_COLABORADORES}
       />
 
       <div className="space-y-4">

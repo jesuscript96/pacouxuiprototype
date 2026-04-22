@@ -1,9 +1,11 @@
 import {
   ArrowPathIcon,
+  CalendarDaysIcon,
   ChartBarIcon,
   ChatBubbleLeftRightIcon,
   ClockIcon,
   StarIcon,
+  TrophyIcon,
   UserMinusIcon,
 } from '@heroicons/react/24/outline'
 import { SectionTitle } from './SectionTitle'
@@ -17,7 +19,7 @@ export function DashboardMetrics() {
           <div className="absolute -right-3 -top-3 h-16 w-16 rounded-full bg-amber-50 transition-transform duration-500 group-hover:scale-150" />
           <div className="relative">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 sm:h-10 sm:w-10">
-              <span className="text-lg sm:text-xl">🎂</span>
+              <CalendarDaysIcon className="h-5 w-5 text-amber-700 sm:h-6 sm:w-6" aria-hidden />
             </div>
             <p className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">2,447</p>
             <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-slate-400 sm:text-sm">
@@ -30,7 +32,7 @@ export function DashboardMetrics() {
           <div className="absolute -right-3 -top-3 h-16 w-16 rounded-full bg-violet-50 transition-transform duration-500 group-hover:scale-150" />
           <div className="relative">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-violet-100 sm:h-10 sm:w-10">
-              <span className="text-lg sm:text-xl">🏆</span>
+              <TrophyIcon className="h-5 w-5 text-violet-700 sm:h-6 sm:w-6" aria-hidden />
             </div>
             <p className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">2,309</p>
             <p className="mt-0.5 text-xs font-medium uppercase tracking-wider text-slate-400 sm:text-sm">

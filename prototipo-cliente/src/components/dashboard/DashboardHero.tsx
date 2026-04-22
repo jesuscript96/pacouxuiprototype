@@ -4,6 +4,8 @@ import {
   MicrophoneIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline'
+import { DevVariantHint } from '../DevVariantHint'
+import { HINT_GLASS_NEUTRAL, HINT_GLASS_PRIMARY, HINT_GLASS_SECONDARY } from '../../guidance/glassSurfaceHints'
 import { SectionTitle } from './SectionTitle'
 
 export function DashboardHero() {
@@ -12,6 +14,7 @@ export function DashboardHero() {
       <SectionTitle eyebrow="Resumen general" />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-5">
+        <div className="flex flex-col gap-2">
         <div className="dash-hero-card dash-glass-hero group relative overflow-hidden rounded-2xl border-l-[3px] border-l-[#3148c8] p-5 text-slate-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-32px_rgba(15,23,42,0.12)] sm:p-6">
           <div className="relative">
             <div className="flex items-center justify-between">
@@ -65,7 +68,10 @@ export function DashboardHero() {
             </div>
           </div>
         </div>
+        <DevVariantHint content={HINT_GLASS_PRIMARY} />
+        </div>
 
+        <div className="flex flex-col gap-2">
         <div className="dash-hero-card dash-glass-hero group relative overflow-hidden rounded-2xl border-l-[3px] border-l-slate-600 p-5 text-slate-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-32px_rgba(15,23,42,0.12)] sm:p-6">
           <div className="relative">
             <div className="flex items-center justify-between">
@@ -116,7 +122,10 @@ export function DashboardHero() {
             </div>
           </div>
         </div>
+        <DevVariantHint content={HINT_GLASS_NEUTRAL} />
+        </div>
 
+        <div className="flex flex-col gap-2">
         <div className="dash-hero-card dash-glass-hero group relative overflow-hidden rounded-2xl border-l-[3px] border-l-indigo-500 p-5 text-slate-800 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_50px_-32px_rgba(15,23,42,0.12)] sm:p-6">
           <div className="relative">
             <div className="flex items-center justify-between">
@@ -169,6 +178,8 @@ export function DashboardHero() {
               </svg>
             </div>
           </div>
+        </div>
+        <DevVariantHint content={HINT_GLASS_SECONDARY} />
         </div>
       </div>
     </div>

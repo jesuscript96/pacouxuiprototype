@@ -17,19 +17,24 @@ export function UxTabs({ tabs, active, onChange }: Props) {
   return (
     <div className="ux-tabs sticky top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8">
       <div className="mx-4 rounded-2xl border border-slate-200 bg-white/80 p-2 shadow-sm backdrop-blur-md sm:mx-6 lg:mx-8">
-        <nav className="flex flex-wrap items-stretch gap-1" role="tablist">
+        <nav
+          className="-mx-0.5 flex flex-nowrap items-stretch gap-1 overflow-x-auto px-0.5 pb-0.5"
+          role="tablist"
+        >
           {tabs.map((tab) => {
             const isActive = active === tab.id
             const Icon = tab.icon
+            const tip = tab.description ? `${tab.label}: ${tab.description}` : tab.label
             return (
               <button
                 key={tab.id}
                 type="button"
                 role="tab"
                 aria-selected={isActive}
+                title={tip}
                 onClick={() => onChange(tab.id)}
                 className={
-                  'group flex min-w-[8rem] flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ' +
+                  'group flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-200 ' +
                   (isActive
                     ? 'bg-[#3148c8] text-white shadow-md ring-1 ring-[#3148c8]/25'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900')
@@ -48,22 +53,10 @@ export function UxTabs({ tabs, active, onChange }: Props) {
                       }
                     />
                   ) : (
-                    <span className="text-xs">▢</span>
+                    <span className="text-xs text-slate-400">▢</span>
                   )}
                 </span>
-                <span className="flex flex-col items-start leading-tight">
-                  <span>{tab.label}</span>
-                  {tab.description ? (
-                    <span
-                      className={
-                        'text-[10.5px] font-normal normal-case tracking-normal ' +
-                        (isActive ? 'text-white/75' : 'text-slate-400')
-                      }
-                    >
-                      {tab.description}
-                    </span>
-                  ) : null}
-                </span>
+                <span className="whitespace-nowrap leading-tight">{tab.label}</span>
               </button>
             )
           })}

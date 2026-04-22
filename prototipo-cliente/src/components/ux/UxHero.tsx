@@ -1,4 +1,6 @@
 import type { ComponentType, ReactNode } from 'react'
+import { DevGuidanceInline } from '../DevGuidanceInline'
+import type { GuidanceContent } from '../../guidance/types'
 
 type Stat = {
   label?: string
@@ -13,6 +15,8 @@ type Props = {
   icon?: ComponentType<{ className?: string }>
   stat?: Stat
   children?: ReactNode
+  /** Criterios de uso del módulo, pegados al héroe (superficie vidrio + contexto). */
+  guidance?: GuidanceContent
 }
 
 export function UxHero({
@@ -22,6 +26,7 @@ export function UxHero({
   icon: Icon,
   stat,
   children,
+  guidance,
 }: Props) {
   return (
     <div className="ux-hero dash-glass-hero relative overflow-hidden rounded-3xl p-6 text-slate-800 sm:p-8">
@@ -67,6 +72,12 @@ export function UxHero({
           </div>
         ) : null}
       </div>
+
+      {guidance ? (
+        <div className="relative mt-6 border-t border-slate-200/60 pt-5">
+          <DevGuidanceInline content={guidance} />
+        </div>
+      ) : null}
 
       {children}
     </div>

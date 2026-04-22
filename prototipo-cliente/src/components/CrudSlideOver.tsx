@@ -6,6 +6,8 @@ import {
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import type { ReactNode } from 'react'
+import { DevGuidancePanel } from './DevGuidancePanel'
+import { GUIDANCE_CRUD_SLIDEOVER_BODY } from '../guidance/crudSlideOverCue'
 
 type Props = {
   open: boolean
@@ -13,6 +15,8 @@ type Props = {
   title: string
   children: ReactNode
   footer?: ReactNode
+  /** Oculta la nota de implementación encima del formulario (p. ej. captura para cliente). */
+  hideDeveloperCue?: boolean
 }
 
 export function CrudSlideOver({
@@ -21,6 +25,7 @@ export function CrudSlideOver({
   title,
   children,
   footer,
+  hideDeveloperCue = false,
 }: Props) {
   return (
     <Dialog open={open} onClose={onClose} className="relative z-[70]">
@@ -47,6 +52,11 @@ export function CrudSlideOver({
             </button>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-6">
+            {!hideDeveloperCue ? (
+              <div className="mb-4">
+                <DevGuidancePanel content={GUIDANCE_CRUD_SLIDEOVER_BODY} className="!mb-0 text-[13px]" />
+              </div>
+            ) : null}
             {children}
           </div>
           {footer ? (

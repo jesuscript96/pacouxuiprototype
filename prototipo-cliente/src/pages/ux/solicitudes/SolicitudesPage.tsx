@@ -8,12 +8,18 @@ import {
 import { useCallback, useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../../components/CrudSlideOver'
+import { DevGuidanceInline } from '../../../components/DevGuidanceInline'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
+import {
+  UX_SOLICITUDES_CATEGORIAS,
+  UX_SOLICITUDES_HERO,
+  UX_SOLICITUDES_PERMISOS,
+} from '../../../guidance/uxSections'
 
 const tabsPermisos: UxTab[] = [
   {
@@ -299,6 +305,7 @@ export function SolicitudesPage() {
         title="Centro de solicitudes del colaborador"
         description="Administra los tipos de permiso disponibles y sus categorías. Define aquí cómo tus equipos piden vacaciones, incapacidades, home office y días personales."
         icon={InboxStackIcon}
+        guidance={UX_SOLICITUDES_HERO}
       />
 
       <UxTabs
@@ -312,6 +319,7 @@ export function SolicitudesPage() {
 
       {active === 'permisos' ? (
         <div className="an-section space-y-4">
+          <DevGuidanceInline content={UX_SOLICITUDES_PERMISOS} />
           {toolbar}
           <MockFilamentTable
             columns={[
@@ -341,6 +349,7 @@ export function SolicitudesPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          <DevGuidanceInline content={UX_SOLICITUDES_CATEGORIAS} />
           {toolbar}
           <MockFilamentTable
             columns={[

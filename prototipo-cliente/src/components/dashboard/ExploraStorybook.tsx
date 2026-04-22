@@ -97,9 +97,9 @@ export function ExploraStorybook() {
               Cada componente de este dashboard vive en el Storybook
             </h2>
             <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">
-              Tarjetas con vidrio esmerilado, badges, tablas estilo Notion, banners y más. Cada patrón está documentado
-              con ejemplos reales, variantes y reglas de uso. Abre cualquier sección para ver cómo se construye, copia el
-              código y aplícalo donde lo necesites.
+              Tarjetas con vidrio esmerilado, badges, tablas estilo Notion, banners y más. Las notas para quien implementa
+              van junto a cada ejemplo (p. ej. qué variante de vidrio usar) y en componentes reutilizables como el héroe
+              o el panel lateral CRUD — no hay una sola página genérica de guías.
             </p>
           </div>
 

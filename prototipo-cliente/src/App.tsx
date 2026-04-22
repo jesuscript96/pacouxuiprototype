@@ -6,9 +6,9 @@ import {
   useParams,
 } from 'react-router-dom'
 import { ClienteShell } from './layouts/ClienteShell'
-import { STORYBOOK_PAGES } from './navigation/config'
+import { STORYBOOK_PAGES, isStorybookSlug } from './navigation/config'
 import { DashboardPage } from './pages/DashboardPage'
-import { StorybookView, isStorybookSlug } from './pages/storybook/StorybookViews'
+import { StorybookView } from './pages/storybook/StorybookViews'
 import { AnaliticosHomePage } from './pages/ux/AnaliticosHomePage'
 import { BajasColaboradoresPage } from './pages/ux/bajas/BajasColaboradoresPage'
 import { CartasSuaPage } from './pages/ux/cartas-sua/CartasSuaPage'

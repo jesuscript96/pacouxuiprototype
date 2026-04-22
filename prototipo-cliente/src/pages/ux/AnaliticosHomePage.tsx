@@ -1,13 +1,19 @@
+import type { ComponentType } from 'react'
 import {
+  ArrowPathIcon,
   ArrowPathRoundedSquareIcon,
   BriefcaseIcon,
+  ChartBarSquareIcon,
   ChartPieIcon,
+  ChatBubbleLeftRightIcon,
   ClipboardDocumentCheckIcon,
+  ClipboardDocumentListIcon,
   FaceSmileIcon,
   HeartIcon,
   PresentationChartLineIcon,
   SparklesIcon,
   TableCellsIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -25,33 +31,38 @@ const secciones = [
     id: 'resumen',
     label: 'Resumen',
     descripcion: 'KPIs principales y visión ejecutiva',
-    icon: '📊',
+    Icon: ChartBarSquareIcon,
   },
   {
     id: 'rotacion',
     label: 'Rotación',
     descripcion: 'Altas, bajas y motivos',
-    icon: '🔄',
+    Icon: ArrowPathIcon,
   },
   {
     id: 'engagement',
     label: 'Engagement',
     descripcion: 'Actividad, adopción y uso',
-    icon: '💬',
+    Icon: ChatBubbleLeftRightIcon,
   },
   {
     id: 'demograficos',
     label: 'Demográficos',
     descripcion: 'Composición de la plantilla',
-    icon: '👥',
+    Icon: UserGroupIcon,
   },
   {
     id: 'encuestas',
     label: 'Encuestas',
     descripcion: 'eNPS, clima y satisfacción',
-    icon: '📋',
+    Icon: ClipboardDocumentListIcon,
   },
-] as const
+] as const satisfies readonly {
+  id: string
+  label: string
+  descripcion: string
+  Icon: ComponentType<{ className?: string }>
+}[]
 
 type SeccionId = (typeof secciones)[number]['id']
 
@@ -114,18 +125,24 @@ export function AnaliticosHomePage() {
 
       <div className="an-tabs sticky top-0 z-20 -mx-4 sm:-mx-6 lg:-mx-8">
         <div className="mx-4 rounded-2xl border border-slate-200 bg-white/80 p-2 shadow-sm backdrop-blur-md sm:mx-6 lg:mx-8">
-          <nav className="flex flex-wrap items-stretch gap-1" role="tablist">
+          <nav
+            className="-mx-0.5 flex flex-nowrap items-stretch gap-1 overflow-x-auto px-0.5 pb-0.5"
+            role="tablist"
+          >
             {secciones.map((item) => {
               const activo = seccion === item.id
+              const { Icon } = item
+              const tip = `${item.label}: ${item.descripcion}`
               return (
                 <button
                   key={item.id}
                   type="button"
                   role="tab"
                   aria-selected={activo}
+                  title={tip}
                   onClick={() => setSeccion(item.id)}
                   className={
-                    'group flex min-w-[8rem] flex-1 items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-semibold transition-all duration-200 ' +
+                    'group flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-all duration-200 ' +
                     (activo
                       ? 'bg-[#3148c8] text-white shadow-md ring-1 ring-[#3148c8]/25'
                       : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900')
@@ -133,23 +150,18 @@ export function AnaliticosHomePage() {
                 >
                   <span
                     className={
-                      'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base ' +
+                      'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ' +
                       (activo ? 'bg-white/20' : 'bg-slate-100 group-hover:bg-white')
                     }
                   >
-                    {item.icon}
-                  </span>
-                  <span className="flex flex-col items-start leading-tight">
-                    <span>{item.label}</span>
-                    <span
+                    <Icon
                       className={
-                        'text-[10.5px] font-normal normal-case tracking-normal ' +
-                        (activo ? 'text-white/75' : 'text-slate-400')
+                        'h-4 w-4 ' + (activo ? 'text-white' : 'text-slate-500')
                       }
-                    >
-                      {item.descripcion}
-                    </span>
+                      aria-hidden
+                    />
                   </span>
+                  <span className="whitespace-nowrap leading-tight">{item.label}</span>
                 </button>
               )
             })}

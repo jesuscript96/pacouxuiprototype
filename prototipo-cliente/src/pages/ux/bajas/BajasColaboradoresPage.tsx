@@ -2,12 +2,14 @@ import { ArchiveBoxIcon, ClockIcon, UserMinusIcon } from '@heroicons/react/24/ou
 import { useCallback, useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../../components/CrudSlideOver'
+import { DevGuidanceInline } from '../../../components/DevGuidanceInline'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass, protoSelectClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
+import { UX_BAJAS_HISTORIAL, UX_BAJAS_PENDIENTES } from '../../../guidance/uxSections'
 
 const tabs: UxTab[] = [
   {
@@ -283,6 +285,8 @@ export function BajasColaboradoresPage() {
           setSearch('')
         }}
       />
+
+      <DevGuidanceInline content={active === 'pendientes' ? UX_BAJAS_PENDIENTES : UX_BAJAS_HISTORIAL} />
 
       <div className="space-y-4">
         {toolbar}

@@ -2,12 +2,14 @@ import { ArrowUpTrayIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
 import { useCallback, useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../../components/CrudSlideOver'
+import { DevGuidanceInline } from '../../../components/DevGuidanceInline'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass, protoSelectClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
+import { UX_CARTAS_CARGAR, UX_CARTAS_HERO, UX_CARTAS_VER } from '../../../guidance/uxSections'
 
 const tabs: UxTab[] = [
   {
@@ -236,6 +238,7 @@ export function CartasSuaPage() {
         title="Cartas del ciclo de nómina"
         description="Genera y administra las cartas SUA de tus colaboradores. Carga los registros en lote, consulta las emitidas y monitorea firmas electrónicas."
         icon={DocumentTextIcon}
+        guidance={UX_CARTAS_HERO}
       />
 
       <UxTabs
@@ -249,6 +252,7 @@ export function CartasSuaPage() {
 
       {active === 'ver' ? (
         <div className="space-y-4">
+          <DevGuidanceInline content={UX_CARTAS_VER} />
           <FilamentListToolbar
             heading="Cartas emitidas"
             newLabel="Nueva carta (demo)"
@@ -287,6 +291,7 @@ export function CartasSuaPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          <DevGuidanceInline content={UX_CARTAS_CARGAR} />
           <FilamentListToolbar
             heading="Carga masiva"
             newLabel="Nueva importación"

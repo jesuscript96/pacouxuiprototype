@@ -13,14 +13,14 @@ import { ProximasAcciones } from './ProximasAcciones'
 import { ResumenEjecutivo } from './ResumenEjecutivo'
 
 /**
- * Orden idéntico a App\Filament\Cliente\Pages\Dashboard::getWidgets()
+ * Orden de widgets del dashboard (saludo → accesos → resto).
  */
 export function DashboardComposition() {
   return (
     <div className="mx-auto max-w-[1600px] space-y-8">
       <BienvenidaBanner />
-      <DashboardHero />
       <AccesosRapidos />
+      <DashboardHero />
       <KpisProgress />
       <DashboardMetrics />
       <DistribucionVisual />

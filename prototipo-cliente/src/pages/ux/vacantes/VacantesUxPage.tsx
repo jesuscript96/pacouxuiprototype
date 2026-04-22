@@ -7,6 +7,7 @@ import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
+import { UX_VACANTES } from '../../../guidance/uxSections'
 
 function badgeCandidatos(n: number) {
   return (
@@ -162,6 +163,7 @@ export function VacantesUxPage() {
         title="Pipeline de reclutamiento"
         description="Publica, gestiona y cierra vacantes. Monitorea el pipeline de candidatos y conecta a tus reclutadores con los jefes directos."
         icon={BriefcaseIcon}
+        guidance={UX_VACANTES}
       />
 
       <div className="space-y-4">

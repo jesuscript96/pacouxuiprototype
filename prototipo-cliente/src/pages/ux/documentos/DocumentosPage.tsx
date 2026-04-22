@@ -2,12 +2,18 @@ import { ArrowUpTrayIcon, BuildingLibraryIcon, UserGroupIcon } from '@heroicons/
 import { useCallback, useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../../components/CrudSlideOver'
+import { DevGuidanceInline } from '../../../components/DevGuidanceInline'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
+import {
+  UX_DOCUMENTOS_CARGAR,
+  UX_DOCUMENTOS_DESTINATARIOS,
+  UX_DOCUMENTOS_HERO,
+} from '../../../guidance/uxSections'
 
 const tabs: UxTab[] = [
   {
@@ -339,6 +345,7 @@ export function DocumentosPage() {
         title="Biblioteca corporativa"
         description="Publica políticas, manuales y comunicados oficiales. Controla quién los recibe, quién los ha leído y quién los ha firmado con trazabilidad legal."
         icon={BuildingLibraryIcon}
+        guidance={UX_DOCUMENTOS_HERO}
       />
 
       <UxTabs
@@ -352,6 +359,7 @@ export function DocumentosPage() {
 
       {active === 'cargar' ? (
         <div className="space-y-4">
+          <DevGuidanceInline content={UX_DOCUMENTOS_CARGAR} />
           {toolbarCargar}
           <MockFilamentTable
             columns={[
@@ -379,6 +387,7 @@ export function DocumentosPage() {
         </div>
       ) : (
         <div className="space-y-4">
+          <DevGuidanceInline content={UX_DOCUMENTOS_DESTINATARIOS} />
           {toolbarDest}
           <MockFilamentTable
             columns={[

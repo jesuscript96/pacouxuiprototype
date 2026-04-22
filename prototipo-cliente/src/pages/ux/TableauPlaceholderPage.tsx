@@ -1,4 +1,6 @@
 import { useParams } from 'react-router-dom'
+import { DevGuidanceInline } from '../../components/DevGuidanceInline'
+import { UX_TABLEAU_PLACEHOLDER } from '../../guidance/uxSections'
 import { TABLEAU_SEGMENTS } from '../../navigation/config'
 
 export function TableauPlaceholderPage() {
@@ -7,6 +9,7 @@ export function TableauPlaceholderPage() {
 
   return (
     <div className="space-y-4">
+      <DevGuidanceInline content={UX_TABLEAU_PLACEHOLDER} />
       <div>
         <h1 className="text-2xl font-bold text-slate-900">{meta?.label ?? 'Informe analítico'}</h1>
         <p className="mt-1 text-sm text-slate-600">

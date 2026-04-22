@@ -1,7 +1,10 @@
 import type { FC } from 'react'
-import { EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline'
 import type { StorybookSlug } from '../../navigation/config'
+import { DevGuidanceInline } from '../../components/DevGuidanceInline'
+import { DevVariantHint } from '../../components/DevVariantHint'
 import { StorybookShell } from '../../components/StorybookShell'
+import { HINT_GLASS_NEUTRAL, HINT_GLASS_PRIMARY, HINT_GLASS_SECONDARY } from '../../guidance/glassSurfaceHints'
 import {
   CamposTextoPage,
   CheckboxesPage,
@@ -22,10 +25,12 @@ import {
 function Panel({
   title,
   subtitle,
+  developerSlot,
   children,
 }: {
   title: string
   subtitle?: string
+  developerSlot?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
@@ -34,6 +39,7 @@ function Panel({
       {subtitle ? (
         <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{subtitle}</p>
       ) : null}
+      {developerSlot ? <div className="mt-4">{developerSlot}</div> : null}
       <div className="mt-6">{children}</div>
     </div>
   )
@@ -348,31 +354,62 @@ function Tarjetas() {
   return (
     <StorybookShell>
       <div className="space-y-10 sm:space-y-12">
-        <Panel title="Hero cards (dashboard)" subtitle="dash-glass-hero con acento de marca">
-          <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div className="dash-hero-card dash-glass-hero group relative overflow-hidden rounded-2xl border-l-[3px] border-l-[#3148c8] p-5 text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 sm:p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-100/80 bg-indigo-50/90 text-[#3148c8] shadow-sm">
-                  <span className="text-sm font-bold">👥</span>
+        <Panel
+          title="Hero cards (dashboard)"
+          subtitle="dash-glass-hero con acento de marca"
+          developerSlot={
+            <DevGuidanceInline
+              content={{
+                title: 'Mismo patrón que en Degradados',
+                summary:
+                  'Las tarjetas del dashboard reutilizan el vidrio con borde de acento. La decisión de color es de jerarquía, no de “gusto”.',
+                bulletsCuandoUsar: [
+                  'Primario: KPI que quieres que el ejecutivo vea primero.',
+                  'Neutro: estados “cero” o secundarios que no deben gritar.',
+                  'Secundario: métrica de producto/adopción entre las dos anteriores.',
+                ],
+                bulletsEvitar: [
+                  'Copiar números de demo a producción sin revisar contraste en tema oscuro (si aplica).',
+                ],
+                equivalenteFilament: ['Widgets Stats o Blade con mismas utilidades Tailwind.'],
+                referenciaReglasCursor: 'Ver también Storybook «Degradados» por variante.',
+              }}
+            />
+          }
+        >
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="flex flex-col gap-3">
+              <div className="dash-hero-card dash-glass-hero group relative overflow-hidden rounded-2xl border-l-[3px] border-l-[#3148c8] p-5 text-slate-800 shadow-sm transition-all hover:-translate-y-0.5 sm:p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-100/80 bg-indigo-50/90 text-[#3148c8] shadow-sm">
+                    <UsersIcon className="h-5 w-5" aria-hidden />
+                  </div>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50/90 px-2.5 py-1 text-xs font-semibold text-emerald-800">
+                    +12%
+                  </span>
                 </div>
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200/80 bg-emerald-50/90 px-2.5 py-1 text-xs font-semibold text-emerald-800">
-                  +12%
-                </span>
+                <div className="mt-4">
+                  <p className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    30,524
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-slate-600">Total Colaboradores</p>
+                </div>
               </div>
-              <div className="mt-4">
-                <p className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-                  30,524
-                </p>
-                <p className="mt-1 text-sm font-medium text-slate-600">Total Colaboradores</p>
+              <DevVariantHint content={HINT_GLASS_PRIMARY} />
+            </div>
+            <div className="flex flex-col gap-3">
+              <div className="dash-hero-card dash-glass-hero rounded-2xl border-l-[3px] border-l-slate-600 bg-white/80 p-5 shadow-sm sm:p-6">
+                <p className="text-3xl font-extrabold text-slate-900">0</p>
+                <p className="mt-1 text-sm text-slate-600">Sin atender</p>
               </div>
+              <DevVariantHint content={HINT_GLASS_NEUTRAL} />
             </div>
-            <div className="dash-hero-card dash-glass-hero rounded-2xl border-l-[3px] border-l-slate-600 bg-white/80 p-5 shadow-sm sm:p-6">
-              <p className="text-3xl font-extrabold text-slate-900">0</p>
-              <p className="mt-1 text-sm text-slate-600">Sin atender</p>
-            </div>
-            <div className="dash-hero-card dash-glass-hero rounded-2xl border-l-[3px] border-l-indigo-500 bg-white/80 p-5 shadow-sm sm:p-6">
-              <p className="text-3xl font-extrabold text-slate-900">23,292</p>
-              <p className="mt-1 text-sm text-slate-600">Descargas App</p>
+            <div className="flex flex-col gap-3">
+              <div className="dash-hero-card dash-glass-hero rounded-2xl border-l-[3px] border-l-indigo-500 bg-white/80 p-5 shadow-sm sm:p-6">
+                <p className="text-3xl font-extrabold text-slate-900">23,292</p>
+                <p className="mt-1 text-sm text-slate-600">Descargas App</p>
+              </div>
+              <DevVariantHint content={HINT_GLASS_SECONDARY} />
             </div>
           </div>
         </Panel>
@@ -408,6 +445,3 @@ export function StorybookView({ slug }: { slug: StorybookSlug }) {
   return <Cmp />
 }
 
-export function isStorybookSlug(s: string): s is StorybookSlug {
-  return s in STORYBOOK_REGISTRY
-}

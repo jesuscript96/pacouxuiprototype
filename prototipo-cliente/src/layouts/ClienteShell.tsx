@@ -44,13 +44,33 @@ export function ClienteShell() {
   const [uxOpen, setUxOpen] = useState(true)
   const location = useLocation()
 
+  const onStorybookPath = location.pathname.startsWith('/storybook')
+  const onUxPath = location.pathname.startsWith('/ux')
+  const showStorybookNav = onStorybookPath || storybookOpen
+  const showUxNav = onUxPath || uxOpen
+
   const uxGrouped = useMemo(() => groupByParent(), [])
 
   const closeMobile = useCallback(() => setMobileOpen(false), [])
 
   useEffect(() => {
-    closeMobile()
+    const id = requestAnimationFrame(() => {
+      closeMobile()
+    })
+    return () => cancelAnimationFrame(id)
   }, [location.pathname, closeMobile])
+
+  useEffect(() => {
+    if (onStorybookPath) {
+      setStorybookOpen(true)
+    }
+  }, [onStorybookPath])
+
+  useEffect(() => {
+    if (onUxPath) {
+      setUxOpen(true)
+    }
+  }, [onUxPath])
 
   const navClass = ({ isActive }: { isActive: boolean }) =>
     clsx(
@@ -117,18 +137,31 @@ export function ClienteShell() {
           <div className="mt-4">
             <button
               type="button"
-              className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-700"
-              onClick={() => setStorybookOpen((v) => !v)}
+              disabled={onStorybookPath}
+              className={clsx(
+                'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-700',
+                onStorybookPath && 'cursor-default opacity-70',
+              )}
+              onClick={() => {
+                if (!onStorybookPath) {
+                  setStorybookOpen((v) => !v)
+                }
+              }}
+              title={
+                onStorybookPath
+                  ? 'Sección abierta mientras navegas en Storybook'
+                  : undefined
+              }
             >
               Storybook
               <ChevronDownIcon
                 className={clsx(
                   'h-4 w-4 transition-transform',
-                  storybookOpen ? 'rotate-0' : '-rotate-90',
+                  showStorybookNav ? 'rotate-0' : '-rotate-90',
                 )}
               />
             </button>
-            {storybookOpen ? (
+            {showStorybookNav ? (
               <div className="mt-1 space-y-0.5 border-l border-slate-200/80 pl-2">
                 {STORYBOOK_PAGES.map((p) => (
                   <NavLink
@@ -146,18 +179,31 @@ export function ClienteShell() {
           <div className="mt-4">
             <button
               type="button"
-              className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-700"
-              onClick={() => setUxOpen((v) => !v)}
+              disabled={onUxPath}
+              className={clsx(
+                'flex w-full items-center justify-between rounded-md px-2 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500 hover:text-slate-700',
+                onUxPath && 'cursor-default opacity-70',
+              )}
+              onClick={() => {
+                if (!onUxPath) {
+                  setUxOpen((v) => !v)
+                }
+              }}
+              title={
+                onUxPath
+                  ? 'Sección abierta mientras navegas en prototipos UX'
+                  : undefined
+              }
             >
               UX prototype
               <ChevronDownIcon
                 className={clsx(
                   'h-4 w-4 transition-transform',
-                  uxOpen ? 'rotate-0' : '-rotate-90',
+                  showUxNav ? 'rotate-0' : '-rotate-90',
                 )}
               />
             </button>
-            {uxOpen ? (
+            {showUxNav ? (
               <div className="mt-2 space-y-3">
                 {Array.from(uxGrouped.entries()).map(([parent, items]) => (
                   <div key={parent}>

@@ -7,6 +7,7 @@ import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { protoInputClass, protoLabelClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
+import { UX_ROLES } from '../../../guidance/uxSections'
 
 function countBadge(n: number, tone: 'info' | 'success') {
   const cls =
@@ -179,6 +180,7 @@ export function RolesUxPage() {
         title="Roles y permisos"
         description="Define quién puede hacer qué en tecben-core. Administra roles por empresa y asigna permisos granulares con trazabilidad completa."
         icon={ShieldCheckIcon}
+        guidance={UX_ROLES}
       />
 
       <div className="space-y-4">

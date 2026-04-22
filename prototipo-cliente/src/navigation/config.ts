@@ -49,6 +49,10 @@ export const STORYBOOK_PAGES: StorybookEntry[] = [
   { slug: 'modales', label: 'Modales', sort: 19 },
 ]
 
+export function isStorybookSlug(s: string): s is StorybookSlug {
+  return STORYBOOK_PAGES.some((p) => p.slug === s)
+}
+
 export type UxNavItem = {
   path: string
   label: string

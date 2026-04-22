@@ -1,3 +1,5 @@
+import { TrophyIcon } from '@heroicons/react/24/outline'
+
 const mes = new Intl.DateTimeFormat('es-MX', { month: 'long' }).format(new Date())
 
 const rows = [
@@ -19,7 +21,10 @@ export function AniversariosTable() {
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
       <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
-        <h3 className="text-sm font-semibold text-slate-800">🏅 Aniversarios de {mes}</h3>
+        <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+          <TrophyIcon className="h-5 w-5 shrink-0 text-violet-600" aria-hidden />
+          Aniversarios de {mes}
+        </h3>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">

@@ -3,6 +3,7 @@ import {
   ArrowTrendingDownIcon,
   ArrowTrendingUpIcon,
   BuildingOffice2Icon,
+  CalendarDaysIcon,
   FunnelIcon,
   MinusSmallIcon,
 } from '@heroicons/react/24/outline'
@@ -138,7 +139,8 @@ export function ResumenEjecutivo() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700 ring-1 ring-amber-200 tabular-nums">
-                      <span>🎂</span> {row.cumpleanos.toLocaleString('es-MX')}
+                      <CalendarDaysIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                      {row.cumpleanos.toLocaleString('es-MX')}
                     </span>
                   </td>
                   <td className="px-6 py-4">

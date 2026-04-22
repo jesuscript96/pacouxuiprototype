@@ -2,21 +2,19 @@ import {
   BanknotesIcon,
   BuildingOfficeIcon,
   ClipboardDocumentListIcon,
-  EyeIcon,
   IdentificationIcon,
   MapIcon,
   MapPinIcon,
-  PencilSquareIcon,
   RectangleStackIcon,
   Squares2X2Icon,
   SquaresPlusIcon,
-  TrashIcon,
 } from '@heroicons/react/24/outline'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../../components/CrudSlideOver'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
+import { TableIconActionButtons } from '../../../components/ux/TableIconActionButtons'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
 import {
@@ -33,6 +31,7 @@ import {
   type CatalogPlainRow,
   type CatalogTabId,
 } from './catalogResourceMeta'
+import { UX_CATALOGOS } from '../../../guidance/uxSections'
 import { catalogPlainRowToDisplayCells } from './catalogPlainToDisplay'
 
 const TAB_DEF: UxTab[] = [
@@ -91,10 +90,6 @@ export function CatalogosPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
   const meta = CATALOG_RESOURCE_META[active]
-
-  useEffect(() => {
-    setSearch('')
-  }, [active])
 
   const filteredRows = useMemo(() => {
     return rowsMap[active].filter((r) => rowMatchesQuery(r, search))
@@ -194,12 +189,16 @@ export function CatalogosPage() {
         title="Estructura organizacional"
         description="Define y mantiene la taxonomía de tu compañía: regiones, departamentos, áreas, puestos y ubicaciones. Todos los módulos de tecben-core consumen estos catálogos."
         icon={RectangleStackIcon}
+        guidance={UX_CATALOGOS}
       />
 
       <UxTabs
         tabs={TAB_DEF}
         active={active}
-        onChange={(id) => setActive(id as CatalogTabId)}
+        onChange={(id) => {
+          setActive(id as CatalogTabId)
+          setSearch('')
+        }}
       />
 
       <div className="an-section space-y-4 rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
@@ -234,32 +233,56 @@ export function CatalogosPage() {
                 return null
               }
               return (
-                <div className="flex justify-end gap-0.5">
-                  <button
-                    type="button"
-                    className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-[#3148c8]"
-                    aria-label="Ver"
-                    onClick={() => openView(plain)}
-                  >
-                    <EyeIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-700"
-                    aria-label="Editar"
-                    onClick={() => openEdit(plain)}
-                  >
-                    <PencilSquareIcon className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                    aria-label="Eliminar"
-                    onClick={() => setDeleteId(String(plain.id))}
-                  >
-                    <TrashIcon className="h-5 w-5" />
-                  </button>
-                </div>
+                <TableIconActionButtons
+                  actions={[
+                    {
+                      id: `view-${plain.id}`,
+                      tone: 'view',
+                      label: 'Ver',
+                      onClick: () => openView(plain),
+                    },
+                    {
+                      id: `edit-${plain.id}`,
+                      tone: 'edit',
+                      label: 'Editar',
+                      onClick: () => openEdit(plain),
+                    },
+                    {
+                      id: `delete-${plain.id}`,
+                      tone: 'delete',
+                      label: 'Eliminar',
+                      onClick: () => setDeleteId(String(plain.id)),
+                    },
+                    {
+                      id: `dl-${plain.id}`,
+                      tone: 'download',
+                      label: 'Descargar',
+                      hint: 'Demo',
+                      disabled: true,
+                    },
+                    {
+                      id: `dup-${plain.id}`,
+                      tone: 'duplicate',
+                      label: 'Duplicar',
+                      hint: 'Demo',
+                      disabled: true,
+                    },
+                    {
+                      id: `send-${plain.id}`,
+                      tone: 'send',
+                      label: 'Enviar',
+                      hint: 'Demo',
+                      disabled: true,
+                    },
+                    {
+                      id: `attach-${plain.id}`,
+                      tone: 'attach',
+                      label: 'Adjuntar',
+                      hint: 'Demo',
+                      disabled: true,
+                    },
+                  ]}
+                />
               )
             },
           }}

@@ -9,17 +9,23 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import type { ComponentType, FC, ReactNode, SVGProps } from 'react'
+import { DevGuidanceInline } from '../../components/DevGuidanceInline'
+import { DevVariantHint } from '../../components/DevVariantHint'
 import { StorybookShell } from '../../components/StorybookShell'
+import { HINT_GLASS_NEUTRAL, HINT_GLASS_PRIMARY, HINT_GLASS_SECONDARY } from '../../guidance/glassSurfaceHints'
 
 type HeroIcon = ComponentType<SVGProps<SVGSVGElement>>
 
 function SbPanel({
   title,
   subtitle,
+  developerSlot,
   children,
 }: {
   title: string
   subtitle?: string
+  /** Guía del bloque (entre título y ejemplos), p. ej. criterios de decisión. */
+  developerSlot?: ReactNode
   children: ReactNode
 }) {
   return (
@@ -28,6 +34,7 @@ function SbPanel({
       {subtitle ? (
         <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{subtitle}</p>
       ) : null}
+      {developerSlot ? <div className="mt-4">{developerSlot}</div> : null}
       <div className="mt-6">{children}</div>
     </div>
   )
@@ -110,24 +117,76 @@ export const DegradadosPage: FC = () => (
       <SbPanel
         title="Superficies tipo vidrio"
         subtitle="Clase dash-glass-hero — fondo translúcido y borde suave"
+        developerSlot={
+          <DevGuidanceInline
+            content={{
+              title: 'Regla rápida: misma clase, distinto acento',
+              summary:
+                'Los tres ejemplos comparten `dash-glass-hero`. Solo cambia el borde izquierdo (`border-l-[#3148c8]`, `slate` o `indigo`). Así no duplicas CSS ni te peleas con fondos distintos.',
+              bulletsCuandoUsar: [
+                'Si dudas entre variantes: cuenta cuántas tarjetas “protagonistas” necesitas — suele ser una por fila o sección.',
+                'Neutro para volumen; primario para la que debe leerse primero; secundario para “importante pero no la estrella”.',
+              ],
+              bulletsEvitar: [
+                'Tres bordes primarios en la misma fila salvo que sean tres acciones equivalentes (casi nunca).',
+                'Vidrio decorativo detrás de inputs densos: baja contraste y cansa.',
+              ],
+              equivalenteFilament: [
+                'Misma tarjeta con `borderColor` / `ring` según jerarquía; no mezclar temas sin motivo.',
+              ],
+              referenciaReglasCursor: 'Monorepo: `.cursor/rules/uxui.mdc` (color primario #3148c8).',
+            }}
+          />
+        }
       >
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-[#3148c8] p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Primario</p>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">#3148c8</p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="flex flex-col gap-3">
+            <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-[#3148c8] p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Primario</p>
+              <p className="mt-2 text-2xl font-extrabold text-slate-900">#3148c8</p>
+            </div>
+            <DevVariantHint content={HINT_GLASS_PRIMARY} />
           </div>
-          <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-slate-600 p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Neutro</p>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">Slate</p>
+          <div className="flex flex-col gap-3">
+            <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-slate-600 p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Neutro</p>
+              <p className="mt-2 text-2xl font-extrabold text-slate-900">Slate</p>
+            </div>
+            <DevVariantHint content={HINT_GLASS_NEUTRAL} />
           </div>
-          <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-indigo-500 p-5 sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Secundario</p>
-            <p className="mt-2 text-2xl font-extrabold text-slate-900">Indigo</p>
+          <div className="flex flex-col gap-3">
+            <div className="dash-glass-hero rounded-2xl border-l-[3px] border-l-indigo-500 p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Secundario</p>
+              <p className="mt-2 text-2xl font-extrabold text-slate-900">Indigo</p>
+            </div>
+            <DevVariantHint content={HINT_GLASS_SECONDARY} />
           </div>
         </div>
       </SbPanel>
-      <SbPanel title="Barras de progreso" subtitle="Color sólido de marca">
-        <div className="mt-6 space-y-4">
+      <SbPanel
+        title="Barras de progreso"
+        subtitle="Color sólido de marca"
+        developerSlot={
+          <DevGuidanceInline
+            content={{
+              title: 'Cuándo usar barra vs otro indicador',
+              summary:
+                'La barra comunica “cuánto falta” de un solo número. Si hay varias dimensiones (tiempo, calidad, cantidad), valora otro gráfico o varias barras con etiquetas claras.',
+              bulletsCuandoUsar: [
+                'Un solo porcentaje o fracción con meta clara (registro, completitud de perfil, carga de archivo).',
+                'Siempre con etiqueta arriba o al lado; nunca solo color.',
+              ],
+              bulletsEvitar: [
+                'Varias barras sin escala común ni unidad (confunde comparación).',
+                'Animación infinita en listados largos (distrae y consume CPU).',
+              ],
+              equivalenteFilament: ['`ProgressColumn` o HTML en vista custom con `aria-valuenow`.'],
+              referenciaReglasCursor: 'Monorepo: `.cursor/rules/uxui.mdc`.',
+            }}
+          />
+        }
+      >
+        <div className="space-y-4">
           {[
             ['78% — Tasa de registro', 78],
             ['45% — Ejemplo medio', 45],
@@ -145,8 +204,30 @@ export const DegradadosPage: FC = () => (
           ))}
         </div>
       </SbPanel>
-      <SbPanel title="Profundidad sin degradado" subtitle="Halos suaves + vidrio">
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <SbPanel
+        title="Profundidad sin degradado"
+        subtitle="Halos suaves + vidrio"
+        developerSlot={
+          <DevGuidanceInline
+            content={{
+              title: 'Halos decorativos (`blur` + opacidad baja)',
+              summary:
+                'Dan profundidad sin otro degradado lineal. Van con `pointer-events-none` y detrás del contenido para no bloquear clics.',
+              bulletsCuandoUsar: [
+                'Hero o cabeceras donde ya usas `dash-glass-hero` y quieres un toque extra sin recargar color.',
+                'Mantén opacidad ≤ 10% salvo mock muy ilustrativo.',
+              ],
+              bulletsEvitar: [
+                'Halos fuertes sobre texto largo (baja legibilidad).',
+                'Más de dos halos grandes compitiendo en un mismo card.',
+              ],
+              equivalenteFilament: ['Capas absolutas en Blade/Livewire con `blur-xl` y baja opacidad.'],
+              referenciaReglasCursor: 'Monorepo: `.cursor/rules/uxui.mdc`.',
+            }}
+          />
+        }
+      >
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50/80 backdrop-blur-md">
             <div className="pointer-events-none absolute -right-6 -top-6 h-28 w-28 rounded-full bg-indigo-400/[0.08] blur-2xl" />
             <p className="relative text-sm font-medium text-slate-600">Halo indigo 8%</p>

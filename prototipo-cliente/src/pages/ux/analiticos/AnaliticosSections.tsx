@@ -374,12 +374,11 @@ const motivos = [
 export function RotacionSection() {
   const radius = 56
   const circ = 2 * Math.PI * radius
-  let acc = 0
-  const arcs = motivos.map((m) => {
+  const arcs = motivos.map((m, idx) => {
+    const accPrev = motivos.slice(0, idx).reduce((s, x) => s + x[1], 0)
     const dash = (m[1] / 100) * circ
     const gap = circ - dash
-    const offset = circ - (acc / 100) * circ
-    acc += m[1]
+    const offset = circ - (accPrev / 100) * circ
     return { label: m[0], pct: m[1], color: m[2], dash, gap, offset }
   })
   return (
