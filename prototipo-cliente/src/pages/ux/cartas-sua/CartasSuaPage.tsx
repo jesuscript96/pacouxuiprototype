@@ -1,7 +1,10 @@
 import { ArrowUpTrayIcon, DocumentTextIcon } from '@heroicons/react/24/outline'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { ConfirmDialog } from '../../../components/ConfirmDialog'
+import { CrudSlideOver } from '../../../components/CrudSlideOver'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
+import { protoInputClass, protoLabelClass, protoSelectClass } from '../../../components/ux/protoFormStyles'
 import { UxCrudRowActions } from '../../../components/ux/UxCrudRowActions'
 import { UxHero } from '../../../components/ux/UxHero'
 import { UxTabs, type UxTab } from '../../../components/ux/UxTabs'
@@ -54,7 +57,7 @@ type CartaVerRaw = {
   estadoTone: 'success' | 'warning' | 'gray'
 }
 
-const CARTAS_VER_RAW: CartaVerRaw[] = [
+const INITIAL_CARTAS: CartaVerRaw[] = [
   {
     key: 'cs1',
     nombre: 'Ricardo Sánchez Pérez',
@@ -87,32 +90,144 @@ const CARTAS_VER_RAW: CartaVerRaw[] = [
   },
 ]
 
+const ESTADO_OPTS: { label: string; tone: 'success' | 'warning' | 'gray' }[] = [
+  { label: 'Firmada', tone: 'success' },
+  { label: 'Vista', tone: 'warning' },
+  { label: 'Pendiente', tone: 'gray' },
+]
+
+type PanelMode = 'create' | 'edit' | 'view' | null
+
 export function CartasSuaPage() {
   const [active, setActive] = useState('ver')
   const [search, setSearch] = useState('')
+  const [cartas, setCartas] = useState<CartaVerRaw[]>(() => [...INITIAL_CARTAS])
 
-  useEffect(() => {
-    setSearch('')
-  }, [active])
+  const [panelMode, setPanelMode] = useState<PanelMode>(null)
+  const [form, setForm] = useState({
+    nombre: '',
+    numero: '',
+    bimestre: '',
+    razon: '',
+    total: '',
+    estadoLabel: 'Pendiente',
+    estadoTone: 'gray' as 'success' | 'warning' | 'gray',
+  })
+  const [editingKey, setEditingKey] = useState<string | null>(null)
+  const [deleteKey, setDeleteKey] = useState<string | null>(null)
 
-  const verRows = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = search.trim().toLowerCase()
-    return CARTAS_VER_RAW.filter((r) => {
+    return cartas.filter((r) => {
       if (!q) {
         return true
       }
       return [r.nombre, r.numero, r.bimestre, r.razon, r.total, r.estadoLabel].some((v) =>
         String(v).toLowerCase().includes(q),
       )
-    }).map((r) => ({
-      _key: r.key,
-      colaborador: colaboradorCell(r.nombre, r.numero),
+    })
+  }, [cartas, search])
+
+  const verRows = useMemo(
+    () =>
+      filtered.map((r) => ({
+        _key: r.key,
+        colaborador: colaboradorCell(r.nombre, r.numero),
+        bimestre: r.bimestre,
+        razon: r.razon,
+        total: r.total,
+        estado: estadoBadge(r.estadoLabel, r.estadoTone),
+      })),
+    [filtered],
+  )
+
+  const closePanel = useCallback(() => {
+    setPanelMode(null)
+    setEditingKey(null)
+  }, [])
+
+  const openCreate = useCallback(() => {
+    setPanelMode('create')
+    setEditingKey(null)
+    setForm({
+      nombre: '',
+      numero: '',
+      bimestre: '2026-1',
+      razon: 'Acme SA de CV',
+      total: '$ 0.00',
+      estadoLabel: 'Pendiente',
+      estadoTone: 'gray',
+    })
+  }, [])
+
+  const openEdit = useCallback((r: CartaVerRaw) => {
+    setPanelMode('edit')
+    setEditingKey(r.key)
+    setForm({
+      nombre: r.nombre,
+      numero: r.numero,
       bimestre: r.bimestre,
       razon: r.razon,
       total: r.total,
-      estado: estadoBadge(r.estadoLabel, r.estadoTone),
-    }))
-  }, [search])
+      estadoLabel: r.estadoLabel,
+      estadoTone: r.estadoTone,
+    })
+  }, [])
+
+  const openView = useCallback((r: CartaVerRaw) => {
+    setPanelMode('view')
+    setEditingKey(r.key)
+    setForm({
+      nombre: r.nombre,
+      numero: r.numero,
+      bimestre: r.bimestre,
+      razon: r.razon,
+      total: r.total,
+      estadoLabel: r.estadoLabel,
+      estadoTone: r.estadoTone,
+    })
+  }, [])
+
+  const save = useCallback(() => {
+    if (panelMode !== 'create' && panelMode !== 'edit') {
+      return
+    }
+    const toneFromLabel = ESTADO_OPTS.find((o) => o.label === form.estadoLabel)?.tone ?? 'gray'
+    const row: CartaVerRaw = {
+      key: editingKey ?? `cs${Date.now()}`,
+      nombre: form.nombre.trim() || 'Sin nombre',
+      numero: form.numero.trim() || '—',
+      bimestre: form.bimestre.trim() || '—',
+      razon: form.razon.trim() || '—',
+      total: form.total.trim() || '$ 0.00',
+      estadoLabel: form.estadoLabel,
+      estadoTone: toneFromLabel,
+    }
+    if (panelMode === 'create') {
+      setCartas((list) => [...list, row])
+    } else if (editingKey) {
+      setCartas((list) => list.map((x) => (x.key === editingKey ? row : x)))
+    }
+    closePanel()
+  }, [closePanel, editingKey, form, panelMode])
+
+  const confirmDelete = useCallback(() => {
+    if (!deleteKey) {
+      return
+    }
+    setCartas((list) => list.filter((x) => x.key !== deleteKey))
+    setDeleteKey(null)
+  }, [deleteKey])
+
+  const readOnly = panelMode === 'view'
+  const panelTitle =
+    panelMode === 'create'
+      ? 'Nueva carta (demo)'
+      : panelMode === 'edit'
+        ? 'Editar carta SUA'
+        : panelMode === 'view'
+          ? 'Ver carta SUA'
+          : ''
 
   return (
     <div className="space-y-6">
@@ -123,14 +238,21 @@ export function CartasSuaPage() {
         icon={DocumentTextIcon}
       />
 
-      <UxTabs tabs={tabs} active={active} onChange={setActive} />
+      <UxTabs
+        tabs={tabs}
+        active={active}
+        onChange={(id) => {
+          setActive(id)
+          setSearch('')
+        }}
+      />
 
       {active === 'ver' ? (
         <div className="space-y-4">
           <FilamentListToolbar
             heading="Cartas emitidas"
             newLabel="Nueva carta (demo)"
-            onNew={() => {}}
+            onNew={openCreate}
             searchValue={search}
             onSearchChange={setSearch}
             searchPlaceholder="Buscar colaborador, bimestre o razón social…"
@@ -147,7 +269,19 @@ export function CartasSuaPage() {
             rows={verRows}
             rowKey={(row) => String(row._key)}
             actionsColumn={{
-              render: () => <UxCrudRowActions />,
+              render: (_row, i) => {
+                const raw = filtered[i]
+                if (!raw) {
+                  return null
+                }
+                return (
+                  <UxCrudRowActions
+                    onView={() => openView(raw)}
+                    onEdit={() => openEdit(raw)}
+                    onDelete={() => setDeleteKey(raw.key)}
+                  />
+                )
+              },
             }}
           />
         </div>
@@ -176,6 +310,136 @@ export function CartasSuaPage() {
           </div>
         </div>
       )}
+
+      <CrudSlideOver
+        open={panelMode !== null}
+        onClose={closePanel}
+        title={panelTitle}
+        footer={
+          readOnly ? (
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                onClick={closePanel}
+              >
+                Cerrar
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                onClick={closePanel}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="rounded-lg bg-[#3148c8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2a3db0]"
+                onClick={save}
+              >
+                Guardar
+              </button>
+            </div>
+          )
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-nombre">
+              Colaborador
+            </label>
+            <input
+              id="cs-nombre"
+              className={protoInputClass}
+              value={form.nombre}
+              onChange={(e) => setForm((f) => ({ ...f, nombre: e.target.value }))}
+              disabled={readOnly}
+            />
+          </div>
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-numero">
+              Nº empleado
+            </label>
+            <input
+              id="cs-numero"
+              className={protoInputClass}
+              value={form.numero}
+              onChange={(e) => setForm((f) => ({ ...f, numero: e.target.value }))}
+              disabled={readOnly}
+            />
+          </div>
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-bim">
+              Bimestre
+            </label>
+            <input
+              id="cs-bim"
+              className={protoInputClass}
+              value={form.bimestre}
+              onChange={(e) => setForm((f) => ({ ...f, bimestre: e.target.value }))}
+              disabled={readOnly}
+            />
+          </div>
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-razon">
+              Razón social
+            </label>
+            <input
+              id="cs-razon"
+              className={protoInputClass}
+              value={form.razon}
+              onChange={(e) => setForm((f) => ({ ...f, razon: e.target.value }))}
+              disabled={readOnly}
+            />
+          </div>
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-total">
+              Total
+            </label>
+            <input
+              id="cs-total"
+              className={protoInputClass}
+              value={form.total}
+              onChange={(e) => setForm((f) => ({ ...f, total: e.target.value }))}
+              disabled={readOnly}
+            />
+          </div>
+          <div>
+            <label className={protoLabelClass} htmlFor="cs-estado">
+              Estado
+            </label>
+            <select
+              id="cs-estado"
+              className={protoSelectClass}
+              value={form.estadoLabel}
+              onChange={(e) => {
+                const label = e.target.value
+                const tone = ESTADO_OPTS.find((o) => o.label === label)?.tone ?? 'gray'
+                setForm((f) => ({ ...f, estadoLabel: label, estadoTone: tone }))
+              }}
+              disabled={readOnly}
+            >
+              {ESTADO_OPTS.map((o) => (
+                <option key={o.label} value={o.label}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </CrudSlideOver>
+
+      <ConfirmDialog
+        open={deleteKey !== null}
+        onClose={() => setDeleteKey(null)}
+        title="¿Eliminar carta?"
+        description="Solo demostración: la fila se elimina del listado en memoria."
+        confirmLabel="Eliminar"
+        onConfirm={confirmDelete}
+      />
     </div>
   )
 }
