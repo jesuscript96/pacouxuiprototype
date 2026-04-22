@@ -1,0 +1,87 @@
+---
+alwaysApply: true
+---
+# ArchivoService — Uso Obligatorio
+
+Todo archivo que se suba al sistema DEBE usar `ArchivoService` ubicado en `app/Services/ArchivoService.php`.
+
+## Estructura de carpetas en S3
+
+companies/{empresa-id}/{modulo}/{registro-id}/{archivo}
+
+BL: Las carpetas se identifican por el ID numérico de la empresa, no por un slug del nombre.
+Así lo maneja el legacy y es más estable ante cambios de nombre de empresa.
+
+Ejemplos:
+- companies/1/candidatos/123/cv.pdf
+- companies/1/cartas-sua/456/carta.pdf
+- companies/5/documentos-corporativos/789/manual.pdf
+
+## Métodos principales
+
+// Inyectar el servicio
+public function __construct(
+    private ArchivoService $archivoService
+) {}
+
+// Guardar archivo desde upload
+$ruta = $this->archivoService->guardar(
+    archivo: $uploadedFile,
+    empresa: $empresa,
+    modulo: 'candidatos',
+    registroId: $candidato->id,
+    nombre: 'cv'
+);
+
+// Guardar contenido generado (PDF, Excel, imagen procesada)
+$ruta = $this->archivoService->guardarContenido(
+    contenido: $pdfBytes,
+    empresa: $empresa,
+    modulo: 'reportes',
+    registroId: $reporte->id,
+    nombreConExtension: 'reporte-mensual.pdf'
+);
+
+// Obtener URL firmada (60 min por defecto)
+$url = $this->archivoService->url($ruta);
+
+// Verificar existencia
+if ($this->archivoService->existe($ruta)) { ... }
+
+// Eliminar
+$this->archivoService->eliminar($ruta);
+
+// Descargar
+return $this->archivoService->descargar($ruta, 'nombre.pdf');
+
+## Configuración
+
+# Desarrollo
+ARCHIVOS_DISK=uploads
+
+# Producción (Wasabi S3)
+ARCHIVOS_DISK=s3
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=pacov3
+AWS_ENDPOINT=https://s3.us-east-1.wasabisys.com
+AWS_USE_PATH_STYLE_ENDPOINT=true
+
+## NO hacer
+
+// MAL: Usar Storage directamente
+Storage::disk('uploads')->put(...);
+Storage::disk('s3')->put(...);
+
+// MAL: Hardcodear rutas
+$ruta = "assets/candidatos/{$id}/cv.pdf";
+
+// MAL: Usar asset() para URLs de S3
+$url = asset($ruta);
+
+## SÍ hacer
+
+// BIEN: Siempre usar ArchivoService
+$ruta = $this->archivoService->guardar(...);
+$url = $this->archivoService->url($ruta);

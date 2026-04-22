@@ -1,0 +1,322 @@
+/* Paridad visual con resources/css/filament-sidebar-overrides.css (subset para prototipo) */
+
+.dash-progress {
+  animation: dash-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) 500ms both;
+}
+
+.dash-breakdown-bar {
+  animation: dash-fill 1s cubic-bezier(0.22, 1, 0.36, 1) 400ms both;
+}
+
+.dash-action-card {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms ease;
+}
+
+.dash-action-card:hover {
+  transform: translateX(3px);
+}
+
+@keyframes dash-fill {
+  from {
+    width: 0;
+  }
+}
+
+.dash-glass-hero {
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(255, 255, 255, 0.55) 42%,
+    rgba(238, 242, 255, 0.62) 100%
+  );
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 28px 72px -38px rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.dash-section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.25rem;
+}
+
+.dash-section-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3148c8;
+}
+
+.dash-section-rule {
+  height: 1px;
+  flex: 1 1 0%;
+  min-width: 0.75rem;
+  background-color: rgba(203, 213, 225, 0.85);
+}
+
+.dash-banner {
+  animation: dash-banner-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+}
+
+.dash-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(ellipse 85% 65% at 12% 8%, rgba(255, 255, 255, 0.45), transparent 52%);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+@keyframes dash-banner-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sb-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sb-storybook .sb-panel {
+  position: relative;
+  transition:
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms ease;
+}
+
+.sb-storybook .sb-panel.sb-fade-up {
+  animation: sb-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sb-storybook .sb-panel.sb-fade-up:nth-child(1) {
+  animation-delay: 0ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(2) {
+  animation-delay: 55ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(3) {
+  animation-delay: 110ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(4) {
+  animation-delay: 165ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(5) {
+  animation-delay: 220ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(6) {
+  animation-delay: 275ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(7) {
+  animation-delay: 330ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(8) {
+  animation-delay: 385ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(9) {
+  animation-delay: 440ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(10) {
+  animation-delay: 495ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(11) {
+  animation-delay: 550ms;
+}
+.sb-storybook .sb-panel.sb-fade-up:nth-child(12) {
+  animation-delay: 605ms;
+}
+
+.sb-storybook .sb-swatch:hover {
+  transform: scale(1.04);
+  box-shadow: 0 8px 20px -6px rgba(49, 72, 200, 0.2);
+}
+
+.sb-storybook .sb-demo-table tbody tr {
+  transition: background-color 120ms ease;
+}
+
+.sb-storybook .sb-demo-table tbody tr:hover td {
+  background-color: #f5f8ff !important;
+}
+
+/* Analíticos showroom */
+.an-kpi,
+.an-section > .grid > *,
+.an-section > .rounded-2xl {
+  animation: an-fade-up 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-section > *:nth-child(1) {
+  animation-delay: 60ms;
+}
+.an-section > *:nth-child(2) {
+  animation-delay: 120ms;
+}
+.an-section > *:nth-child(3) {
+  animation-delay: 180ms;
+}
+.an-section > *:nth-child(4) {
+  animation-delay: 240ms;
+}
+.an-section > *:nth-child(5) {
+  animation-delay: 300ms;
+}
+
+@keyframes an-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.an-ring {
+  animation: an-donut-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes an-donut-draw {
+  from {
+    stroke-dashoffset: 1000;
+    opacity: 0.2;
+  }
+}
+
+.an-sparkline path {
+  stroke-dasharray: 500;
+  stroke-dashoffset: 500;
+  animation: an-sparkline-draw 1200ms cubic-bezier(0.22, 1, 0.36, 1) 200ms forwards;
+}
+
+@keyframes an-sparkline-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.ux-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+@media (min-width: 640px) {
+  .ux-tabs {
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ux-tabs {
+    margin-left: -2rem;
+    margin-right: -2rem;
+  }
+}
+
+@keyframes an-donut-draw {
+  from {
+    stroke-dashoffset: 1000;
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.an-donut-seg {
+  animation: an-donut-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-gauge-fill {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: an-sparkline-draw 1300ms cubic-bezier(0.22, 1, 0.36, 1) 200ms forwards;
+}
+
+.an-needle {
+  transform-origin: 110px 110px;
+  animation: an-needle-rotate 1300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes an-needle-rotate {
+  from {
+    transform: rotate(-90deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.an-treemap-tile {
+  animation: an-fade-up 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.an-treemap-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.12);
+}
+
+.an-timeline-item {
+  animation: an-fade-up 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-timeline-item:nth-child(1) {
+  animation-delay: 100ms;
+}
+.an-timeline-item:nth-child(2) {
+  animation-delay: 180ms;
+}
+.an-timeline-item:nth-child(3) {
+  animation-delay: 260ms;
+}
+.an-timeline-item:nth-child(4) {
+  animation-delay: 340ms;
+}
+.an-timeline-item:nth-child(5) {
+  animation-delay: 420ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sb-storybook .sb-panel.sb-fade-up,
+  .sb-storybook .sb-swatch,
+  .dash-banner,
+  .an-kpi,
+  .an-sparkline path,
+  .an-donut-seg,
+  .an-gauge-fill,
+  .an-needle,
+  .an-treemap-tile {
+    animation: none !important;
+    transition: none !important;
+  }
+}

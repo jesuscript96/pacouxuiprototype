@@ -1,0 +1,62 @@
+@import 'tailwindcss';
+@import './styles/filament-parity.css';
+
+@theme {
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-proto-primary: #3148c8;
+  --color-proto-sidebar-bg: #edf0f7;
+  --color-proto-sidebar-border: #d8dde8;
+  --color-proto-content-bg: #f7f9fc;
+}
+
+:root {
+  --sidebar-bg: #edf0f7;
+  --sidebar-border: #d8dde8;
+  --sidebar-hover-bg: #dde3ef;
+  --sidebar-active-bg: rgba(49, 72, 200, 0.09);
+  --sidebar-text: #64748b;
+  --sidebar-text-active: #3148c8;
+  --content-bg: #f7f9fc;
+  --card-border: #e4e8f0;
+  --proto-primary: #3148c8;
+}
+
+html {
+  font-family: var(--font-sans);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--content-bg);
+  color: #0f172a;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+/* Área principal alineada con Filament (contenido fluido, ancho máximo típico del dashboard) */
+.proto-fi-main {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Storybook shell gradient (from storybook-shell.blade) */
+.sb-storybook {
+  position: relative;
+  width: 100%;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  background: linear-gradient(
+    to bottom,
+    rgb(248 250 252 / 0.9),
+    #f7f9fc,
+    #f7f9fc
+  );
+}
+
+.sb-panel {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+}

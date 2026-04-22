@@ -1,0 +1,110 @@
+---
+description: Verificar métodos existentes antes de crear nuevos - Evita duplicación de lógica en modelos y servicios
+globs: ["app/Models/**/*.php", "app/Services/**/*.php", "app/Actions/**/*.php", "app/Traits/**/*.php"]
+alwaysApply: true
+---
+
+# Regla: Reutilizar antes de crear
+
+## Principio
+
+Antes de crear un método nuevo en un modelo, servicio, action o trait, **DEBES verificar si ya existe uno que haga lo mismo o algo similar**.
+
+Esto aplica especialmente cuando:
+- El método involucra queries o filtros
+- El método calcula o transforma datos
+- El método valida condiciones de negocio
+- El método está relacionado con relaciones Eloquent
+
+## Checklist OBLIGATORIO antes de crear un método
+
+### 1. Buscar en el mismo modelo/clase:
+```bash
+# Ver todos los métodos del modelo
+grep -n "public function\|protected function\|private function" app/Models/{Modelo}.php
+```
+
+### 2. Buscar métodos con nombres similares en todo el proyecto:
+```bash
+# Buscar por palabra clave del concepto (ej: "activo", "pendiente", "total")
+grep -rn "function.*{palabraClave}" app/Models/ app/Services/ app/Actions/ --include="*.php"
+```
+
+### 3. Buscar scopes relacionados:
+```bash
+# Los scopes pueden cubrir la funcionalidad que necesitas
+grep -rn "scope[A-Z]" app/Models/{Modelo}.php
+```
+
+### 4. Buscar en traits que use el modelo:
+```bash
+# Ver qué traits usa el modelo
+grep -n "^use " app/Models/{Modelo}.php | grep -v "^use App\|^use Illuminate"
+```
+
+## Ejemplos de duplicación a evitar
+
+### ❌ INCORRECTO: Crear método duplicado
+```php
+// Ya existe en el modelo:
+public function estaActivo(): bool
+{
+    return $this->estado === 'activo';
+}
+
+// NO crear otro que haga lo mismo:
+public function isActive(): bool  // ❌ Duplicado con otro nombre
+{
+    return $this->estado === 'activo';
+}
+
+public function activo(): bool  // ❌ Duplicado con otro nombre
+{
+    return $this->estado === 'activo';
+}
+```
+
+### ✅ CORRECTO: Reutilizar el existente
+```php
+// Usar el método que ya existe:
+if ($modelo->estaActivo()) { ... }
+```
+
+### ❌ INCORRECTO: Crear scope duplicado
+```php
+// Ya existe:
+public function scopeActivos($query) { ... }
+
+// NO crear:
+public function scopeEstadoActivo($query) { ... }  // ❌ Hace lo mismo
+```
+
+## Qué hacer si encuentras un método similar
+
+1. **Si hace exactamente lo mismo:** Usa el existente, no crees uno nuevo.
+
+2. **Si hace algo parecido pero no exacto:** 
+   - Evalúa si puedes extender el existente con parámetros opcionales
+   - Si no, crea el nuevo pero documenta la diferencia con `// BL:`
+
+3. **Si el nombre del existente es confuso:**
+   - Propón renombrarlo (refactor) en lugar de crear uno nuevo
+   - Usa `// TODO: Refactor - renombrar a X` si no puedes hacerlo ahora
+
+## Reporte obligatorio
+
+Cuando crees un método nuevo, incluye en tu respuesta:
+```
+MÉTODOS VERIFICADOS:
+- Busqué en [Modelo].php: [X métodos encontrados, ninguno hace esto]
+- Busqué por palabra clave "[X]": [resultados]
+- Método nuevo creado: [nombre] porque [justificación]
+```
+
+## NO hacer
+
+- ❌ NO crear un método sin antes buscar si existe uno similar
+- ❌ NO asumir que porque usas un nombre diferente, no es duplicado
+- ❌ NO crear versiones en inglés de métodos que ya existen en español (o viceversa)
+- ❌ NO crear `getX()` si ya existe `obtenerX()` que hace lo mismo
+- ❌ NO crear scopes que replican lógica de métodos de instancia

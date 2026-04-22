@@ -1,0 +1,126 @@
+# ===========================================
+# Entorno y secretos (nunca subir)
+# ===========================================
+.env
+.env.*
+!.env.example
+.env_paco_legacy
+.env.backup
+.env.production
+.env.local
+.env.*.local
+auth.json
+*.key
+/storage/*.key
+ca.pem
+
+# ===========================================
+# Dependencias (se instalan con composer/npm)
+# ===========================================
+/vendor
+/node_modules
+/public/hot
+/public/storage
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# ===========================================
+# Laravel: storage y cache
+# ===========================================
+/storage/pail
+/storage/logs/*
+!/storage/logs/.gitignore
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/app/public/*
+!/storage/app/public/.gitignore
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# ===========================================
+# Base de datos local / análisis temporal
+# ===========================================
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+/storage/app/dev_db_analyze.json
+
+# ===========================================
+# Tests y cobertura
+# ===========================================
+phpunit.xml
+.phpunit.result.cache
+.phpunit.cache
+/.phpunit.cache
+/pest-cache
+/coverage
+.coverage
+htmlcov/
+
+# ===========================================
+# IDEs y editores
+# ===========================================
+/.fleet
+/.idea
+/.vscode
+/.nova
+/.zed
+.phpactor.json
+*.code-workspace
+
+# ===========================================
+# Sistema operativo y misc
+# ===========================================
+.DS_Store
+Thumbs.db
+*.log
+Homestead.json
+Homestead.yaml
+Vagrantfile
+.terraform/
+*.tfstate
+*.tfstate.*
+Thumbs.db
+/database/testing.sqlite
+
+/storage/app/public/uploads
+/storage/app/public/uploads/*
+/public/assets/*
+/public/assets/companies/*
+
+# ===========================================
+# Publicaciones de paquetes (regenerables con vendor:publish)
+# ===========================================
+# Ignorar todo bajo lang/vendor salvo traducciones Filament que sí versionamos.
+/lang/vendor/**
+!/lang/vendor/filament-actions/
+!/lang/vendor/filament-actions/**
+!/lang/vendor/filament-panels/
+!/lang/vendor/filament-panels/**
+!/lang/vendor/filament-forms/
+!/lang/vendor/filament-forms/**
+/public/vendor/
+/resources/views/vendor/
+/resources/views/errors/
+!/resources/views/errors/403.blade.php
+/stubs/
+/sail
+/docker
+/routes/ai.php
+/resources/views/mcp/
+env.admin
+env.cliente
+
+# Clockwork (debug local; el índice y los .json se regeneran)
+/storage/clockwork/
+/storage/clockwork/*
+!/storage/clockwork/.gitignore
+/storage/mailpit/

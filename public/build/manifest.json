@@ -1,0 +1,35 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-C_PTjlEg.css",
+    "src": "resources/css/app.css",
+    "isEntry": true,
+    "name": "app",
+    "names": [
+      "app.css"
+    ]
+  },
+  "resources/css/filament-sidebar-overrides.css": {
+    "file": "assets/filament-sidebar-overrides-K-Qc7Eik.css",
+    "src": "resources/css/filament-sidebar-overrides.css",
+    "isEntry": true,
+    "name": "filament-sidebar-overrides",
+    "names": [
+      "filament-sidebar-overrides.css"
+    ]
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-CKl8NZMC.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "vendor/resma/filament-awin-theme/resources/css/theme.css": {
+    "file": "assets/theme-E2hYqk2E.css",
+    "src": "vendor/resma/filament-awin-theme/resources/css/theme.css",
+    "isEntry": true,
+    "name": "theme",
+    "names": [
+      "theme.css"
+    ]
+  }
+}

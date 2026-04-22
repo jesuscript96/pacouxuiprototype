@@ -1,0 +1,95 @@
+---
+description: Regla transversal que prioriza la lógica de negocio sobre implementación técnica y previene duplicación de tablas/migraciones en todo el proyecto Paco/Tecben.
+globs: ["**/*.php", "**/*.blade.php"]
+alwaysApply: true
+---
+
+# Lógica de Negocio Primero
+
+## Regla de oro
+
+Antes de escribir CUALQUIER línea de código para un módulo, debes tener claro:
+
+1. ¿Qué entidades están involucradas?
+2. ¿Qué reglas de negocio aplican?
+3. ¿Qué validaciones son obligatorias?
+4. ¿Qué permisos se requieren?
+5. ¿El flujo está completo o hay ambigüedades?
+
+Si no puedes responder las 5, DETENTE y pide la ficha del módulo.
+
+## Checklist pre-implementación
+
+Antes de crear un resource, modelo o migración para un módulo de negocio:
+
+- [ ] Tengo la ficha técnica del módulo (del agente paco-legacy o del dev)
+- [ ] Las reglas de negocio están claras (no hay ⚠️ sin resolver)
+- [ ] Sé qué campos son obligatorios y cuáles opcionales
+- [ ] Sé qué relaciones existen entre entidades
+- [ ] Sé qué tipo de usuario puede acceder a cada acción
+- [ ] Verifiqué si hay recursos hermanos que seguir como patrón
+
+## Cuando hay conflicto
+
+Si la forma "correcta" de Laravel/Filament contradice una regla de negocio:
+→ Implementa la regla de negocio.
+→ Agrega un comentario `// BL: [explicación de por qué se hace así]`.
+
+Si el legacy tiene lógica que parece incorrecta:
+→ NO la repliques automáticamente.
+→ Pregunta: "¿Esta regla sigue vigente o era deuda técnica del legacy?"
+
+---
+
+## Reglas de migraciones y tablas (CRÍTICO)
+
+### Antes de crear CUALQUIER migración o tabla nueva:
+
+1. **Verificar si la tabla ya existe.** Busca en database/migrations/ si ya hay
+   una migración que cree esa tabla o una con nombre similar (singular/plural,
+   español/inglés, con o sin prefijo).
+   Ejemplo: si vas a crear `colaboradores`, busca también `empleados`, `high_employees`,
+   `colaborador`, `employees`.
+
+2. **Verificar si el modelo ya existe.** Busca en app/Models/ si ya hay un modelo
+   que apunte a una tabla con nombre similar. Revisa el atributo `$table` del modelo.
+
+3. **Verificar FKs existentes.** Antes de crear una FK a otra tabla, confirma que:
+   - La tabla destino existe Y se crea en una migración con timestamp anterior.
+   - El nombre de la tabla destino es EXACTO (centros_pago vs centros_pagos).
+   - No hay otra FK apuntando a una tabla diferente para el mismo concepto.
+
+4. **Una sola migración por tabla.** No crees dos migraciones que hagan
+   Schema::create() de la misma tabla. Si necesitas agregar columnas a una tabla
+   que ya existe, usa Schema::table() en una migración nueva.
+
+5. **Nomenclatura consistente.** Tablas nuevas en ESPAÑOL y en PLURAL:
+   - ✅ colaboradores, beneficiarios, cuentas_nomina
+   - ❌ collaborators, employee, cuenta_nomina (singular)
+   - Si la tabla ya existe con otro nombre, USA ESA. No crees una nueva.
+
+6. **Booleanos.** Para campos de verificación/estado binario, SIEMPRE usar booleans:
+   - ✅ `verificado` (boolean)
+   - ✅ `es_activo` (boolean)
+   - ❌ `status = 'verified'` (string)
+   - ❌ `verificado = 1` (integer)
+   - ❌ `verificado = 'SI'` (string)
+
+### Si encuentras una tabla duplicada o conflicto:
+
+→ NO crees la tabla nueva.
+→ Reporta: "⚠️ Ya existe la tabla [X] que parece cubrir esta entidad. ¿Uso esa o creo una nueva?"
+→ Espera confirmación antes de continuar.
+
+### Al terminar un módulo:
+
+→ Lista todas las tablas nuevas que se crearon en este módulo.
+→ Formato: "Tablas creadas: [lista]. Verificar con el equipo antes de merge."
+→ Esto permite que Rafa y el equipo sepan qué tablas nuevas esperan al bajar cambios.
+
+### Protocolo post-merge:
+
+Cuando se mergeen ramas de diferentes desarrolladores:
+→ Correr el prompt de verificación de compatibilidad de migraciones.
+→ Verificar que no hay tablas duplicadas con `SHOW TABLES`.
+→ Si hay conflictos, resolverlos ANTES de seguir desarrollando.

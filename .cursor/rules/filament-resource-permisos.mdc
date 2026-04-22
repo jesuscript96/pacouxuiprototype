@@ -1,0 +1,174 @@
+---
+description: Permisos Spatie/Shield en Resources Filament - Aplicar SIEMPRE al crear o modificar Resources
+globs: app/Filament/**/Resources/**/*Resource.php
+alwaysApply: true
+---
+
+# Regla: Permisos en Resources Filament
+
+## Cuándo aplica
+- Al **crear** un nuevo Resource bajo `app/Filament/`
+- Al **modificar** un Resource existente
+- Especialmente en `app/Filament/Cliente/Resources/`
+
+## Patrón de referencia
+**Archivo canónico:** `app/Filament/Cliente/Resources/Colaboradores/ColaboradorResource.php`
+
+## Formato de permisos
+```
+{AcciónPascal}:{ModeloStudly}
+```
+
+Ejemplos:
+- `ViewAny:Colaborador`
+- `Create:AreaGeneral`
+- `Update:CentroPago`
+- `Delete:Region`
+
+**Separador:** `:` (configurado en `config/filament-shield.php`)
+
+## Métodos a implementar en CADA Resource
+```php
+<?php
+
+// Obtener el nombre del modelo en Studly para los permisos
+// Usar class_basename del modelo: AreaGeneral, CentroPago, Puesto, etc.
+
+public static function canViewAny(): bool
+{
+    return (bool) auth()->user()?->can('ViewAny:{ModeloStudly}');
+}
+
+public static function canCreate(): bool
+{
+    return (bool) auth()->user()?->can('Create:{ModeloStudly}');
+}
+
+public static function canEdit(Model $record): bool
+{
+    return (bool) auth()->user()?->can('Update:{ModeloStudly}');
+}
+
+public static function canDelete(Model $record): bool
+{
+    return (bool) auth()->user()?->can('Delete:{ModeloStudly}');
+}
+
+public static function canView(Model $record): bool
+{
+    return (bool) auth()->user()?->can('View:{ModeloStudly}');
+}
+
+public static function canDeleteAny(): bool
+{
+    return (bool) auth()->user()?->can('DeleteAny:{ModeloStudly}');
+}
+
+public static function canForceDelete(Model $record): bool
+{
+    return (bool) auth()->user()?->can('ForceDelete:{ModeloStudly}');
+}
+
+public static function canForceDeleteAny(): bool
+{
+    return (bool) auth()->user()?->can('ForceDeleteAny:{ModeloStudly}');
+}
+
+public static function canRestore(Model $record): bool
+{
+    return (bool) auth()->user()?->can('Restore:{ModeloStudly}');
+}
+
+public static function canRestoreAny(): bool
+{
+    return (bool) auth()->user()?->can('RestoreAny:{ModeloStudly}');
+}
+
+public static function canReplicate(Model $record): bool
+{
+    return (bool) auth()->user()?->can('Replicate:{ModeloStudly}');
+}
+
+public static function canReorder(): bool
+{
+    return (bool) auth()->user()?->can('Reorder:{ModeloStudly}');
+}
+```
+
+## API a usar
+- ✅ `auth()->user()?->can('...')` 
+- ❌ NO usar `hasPermissionTo()` (mantener consistencia con el proyecto)
+
+## Después de crear/modificar Resource
+
+1. **Generar permisos en BD (Panel Cliente):**
+```bash
+   php artisan shield:generate-cliente
+```
+
+2. **Generar permisos en BD (Panel Admin):**
+```bash
+   php artisan shield:generate
+```
+
+3. **Verificar permisos creados:**
+```php
+   // En tinker
+   \Spatie\Permission\Models\Permission::where('name', 'like', '%{ModeloStudly}%')->pluck('name');
+```
+
+## Policy (opcional pero recomendada)
+
+Para autorización fuera de Filament (API, Gates), crear `app/Policies/{Modelo}Policy.php`:
+```php
+<?php
+
+namespace App\Policies;
+
+use App\Models\User as AuthUser;
+use App\Models\{Modelo};
+
+class {Modelo}Policy
+{
+    public function viewAny(AuthUser $user): bool
+    {
+        return $user->can('ViewAny:{Modelo}');
+    }
+
+    public function view(AuthUser $user, {Modelo} $record): bool
+    {
+        return $user->can('View:{Modelo}');
+    }
+
+    public function create(AuthUser $user): bool
+    {
+        return $user->can('Create:{Modelo}');
+    }
+
+    public function update(AuthUser $user, {Modelo} $record): bool
+    {
+        return $user->can('Update:{Modelo}');
+    }
+
+    public function delete(AuthUser $user, {Modelo} $record): bool
+    {
+        return $user->can('Delete:{Modelo}');
+    }
+}
+```
+
+## NO hacer
+
+- ❌ No confiar en que Filament autorice automáticamente sin Policy ni `can*()`
+- ❌ No usar permisos legacy snake_case (`view_area_general`) — usar `ViewAny:AreaGeneral`
+- ❌ No omitir `canViewAny()` — sin él, cualquier usuario autenticado ve el módulo
+- ❌ No asumir que `FilamentShieldPlugin` aplica en panel Cliente (está deshabilitado)
+
+## Checklist al crear Resource
+
+- [ ] Definir `protected static ?string $model = ...`
+- [ ] Implementar todos los métodos `can*()` con formato `Acción:Modelo`
+- [ ] Ejecutar `shield:generate-cliente` o `shield:generate`
+- [ ] Verificar que el usuario sin rol NO ve el módulo
+- [ ] Verificar que el usuario CON rol y permiso SÍ ve el módulo
+- [ ] (Opcional) Crear Policy si se necesita autorización fuera de Filament

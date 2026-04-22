@@ -1,0 +1,158 @@
+---
+description: Reglas de UX/UI para diseño e implementación de interfaces en Filament v4
+alwaysApply: true
+---
+
+# UX/UI — Principios y Patrones del Proyecto
+
+## Principio fundamental
+
+Antes de proponer cualquier cambio visual o de interacción, **verifica que la lógica de negocio ya esté implementada o consultada**. No rediseñes flujos que aún no existen. Si el cambio toca comportamiento (no solo apariencia), consulta la ficha del módulo o pregunta.
+
+---
+
+## Antes de implementar UI nueva
+
+1. ¿Existe ya un resource hermano que resuelva algo similar? → Cópialo como base.
+2. ¿Las labels, placeholders y mensajes están en **español**?
+3. ¿El componente que necesitas ya existe en `app/Filament/Support/`?
+4. ¿La acción tiene consecuencias irreversibles? → Agrega `->requiresConfirmation()`.
+5. ¿Es un catálogo simple en panel Admin? → Usa `CatalogSlideOver` + `CatalogAdminListRecords`.
+
+---
+
+## Formularios
+
+### Estructura y agrupación
+
+- Usa **`Section`** para agrupar campos relacionados. Dale título descriptivo en español.
+- Usa **`Wizard`** cuando el flujo tiene pasos secuenciales con dependencias (ej. datos personales → datos laborales → beneficiarios).
+- Usa **`Tabs`** solo cuando los grupos son verdaderamente independientes y el usuario necesita cambiar entre ellos sin orden fijo.
+- **No usar `Fieldset`** — el proyecto usa `Section` consistentemente.
+- Secciones opcionales/avanzadas: `->collapsible()->collapsed()` para reducir carga cognitiva.
+
+### Campos
+
+- `Select` con relationship: siempre `->searchable()->preload()` cuando la lista supera ~10 registros.
+- `DatePicker`: siempre `->native(false)` para consistencia visual.
+- `FileUpload`: especificar `->acceptedFileTypes()` y `->maxSize()` según regla de negocio.
+- Campos obligatorios: `->required()` + `->helperText()` si el criterio de validación no es obvio.
+- Campos con efectos en cascada: `->live()` + `->afterStateUpdated()`.
+- Nunca dejar un campo sin label aunque parezca obvio por contexto.
+
+### UX de validación
+
+- Mensajes de error en español, concretos: "El correo ya está registrado", no "Validation failed".
+- Para campos críticos de negocio, añadir `->hint()` o `->helperText()` preventivo.
+
+---
+
+## Tablas
+
+### Columnas
+
+- Columnas de estado/tipo: usar `->badge()` con color semántico:
+  - `success` → activo, completado, aprobado
+  - `warning` → pendiente, en revisión
+  - `danger` → inactivo, rechazado, baja
+  - `primary` / `gray` → neutral / informativo
+- Columnas de fecha: `->date('d/m/Y')` o `->dateTime('d/m/Y H:i')` según contexto.
+- Columnas de relación: eager load siempre con `->relationship()` o query explícita para evitar N+1.
+- `->searchable()` en columnas que el usuario realmente va a buscar (nombre, email, clave).
+- `->sortable()` en columnas numéricas, de fecha y de estado.
+
+### Filtros
+
+- Placeholder de `SelectFilter`: "Todas", "Todos", "Cualquiera" — nunca vacío.
+- Incluir `TrashedFilter` en catálogos con soft delete.
+- Agrupar filtros relacionados si hay más de 3.
+
+### Acciones
+
+- Acciones destructivas: `->color('danger')->icon('heroicon-o-trash')` + `->requiresConfirmation()`.
+- Agrupar con `ActionGroup` cuando hay más de 2 acciones por fila.
+- `BulkActionGroup` con `DeleteBulkAction` como mínimo en catálogos con permisos de borrado.
+- Acciones de catálogo en panel Admin: usar `CatalogSlideOver::editAction()` y `CatalogSlideOver::viewAction()`.
+
+---
+
+## Feedback y comunicación
+
+### Notificaciones
+
+```php
+Notification::make()
+    ->title('Título corto y claro')  // ej. "Colaborador creado", "Error al guardar"
+    ->body('Detalle opcional si el título no es suficiente.')
+    ->success()   // o ->danger() / ->warning() / ->info()
+    ->send();
+```
+
+- Títulos: orientados al resultado, no a la acción. "Cambios guardados", no "Se ejecutó el save".
+- `->danger()` para errores, nunca silenciarlos.
+- No mostrar notificación de éxito si Filament ya la muestra automáticamente (create/edit/delete).
+
+### Confirmaciones
+
+- `->requiresConfirmation()` obligatorio en: eliminar, dar de baja, enviar notificaciones push, cambios de estado irreversibles.
+- `->modalHeading()` y `->modalDescription()` siempre en español y con contexto suficiente:
+  - ✅ `->modalHeading('¿Dar de baja a este colaborador?')`
+  - ❌ `->modalHeading('¿Estás seguro?')`
+
+---
+
+## Iconos
+
+- Prefijo siempre `heroicon-o-` (outline). Usar `heroicon-s-` (solid) solo para estados activos o énfasis especial.
+- Acciones comunes estándar:
+  - Editar: `heroicon-o-pencil-square`
+  - Ver: `heroicon-o-eye`
+  - Eliminar: `heroicon-o-trash`
+  - Crear: `heroicon-o-plus`
+  - Enviar: `heroicon-o-paper-airplane`
+  - Configurar: `heroicon-o-cog-6-tooth`
+
+---
+
+## Idioma y tono
+
+- Todo texto visible al usuario en **español** (labels, placeholders, headings, tooltips, mensajes).
+- Tono: directo, profesional, sin tecnicismos. "Guardar", no "Persistir datos".
+- Usar `->label()`, `->placeholder()`, `->helperText()`, `->hint()`, `->tooltip()` según aplique.
+- `getModelLabel()` y `getPluralModelLabel()` en español en todos los resources.
+- Grupos de navegación: en español, consistentes con los existentes en `ClientePanelProvider`.
+
+---
+
+## Patrones por contexto
+
+| Caso | Patrón a usar |
+|---|---|
+| Catálogo simple en panel Admin | `CatalogAdminListRecords` + `CatalogSlideOver` |
+| Formulario con pasos secuenciales | `Wizard` + `Step` |
+| Formulario con secciones independientes | `Section` colapsables |
+| Confirmación de acción sensible | `->requiresConfirmation()` con heading descriptivo |
+| Estado binario en columna | `->badge()` con color semántico |
+| Acción con lógica compleja en modal | `->form([...])` + `->action(fn(...))` en `Tables\Actions\Action` |
+
+---
+
+## CSS y estilos
+
+- No añadir estilos inline ni clases Tailwind arbitrarias si se puede resolver con componentes Filament.
+- Overrides CSS van en `resources/css/filament-sidebar-overrides.css`, nunca en `app.css` salvo utilitarios globales.
+- Color primario del proyecto: `#3148c8` — no cambiar sin aprobación.
+- Tema base: `FilamentAwinTheme` — no sobreescribir sus variables sin necesidad.
+
+---
+
+## NO hacer
+
+- ❌ Cambiar flujos de negocio para "mejorar UX" sin validar la regla de negocio primero.
+- ❌ Crear componentes Blade o Livewire propios si Filament ya provee el componente equivalente.
+- ❌ Labels en inglés en campos del panel Cliente o Admin.
+- ❌ Mostrar errores técnicos (stack traces, nombres de excepción) al usuario final.
+- ❌ Omitir `->requiresConfirmation()` en acciones destructivas.
+- ❌ Usar `Fieldset` — el proyecto usa `Section`.
+- ❌ Dejar `SelectFilter` sin placeholder.
+- ❌ Agregar CSS en `<style>` tags en Blade views.

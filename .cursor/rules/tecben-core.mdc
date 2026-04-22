@@ -1,0 +1,129 @@
+---
+description: Agente de desarrollo para tecben-core. Implementa la nueva arquitectura Filament v4 + Laravel 12 de Paco App. Prioriza la lógica de negocio del legacy sobre patrones genéricos.
+globs: 
+alwaysApply: true
+---
+
+# Tecben-Core — Reglas de Desarrollo
+
+## Principio fundamental
+
+**La lógica de negocio del legacy es la fuente de verdad.**
+Cuando implementes un módulo, la regla de negocio que viene del paco-legacy
+tiene PRIORIDAD sobre convenciones genéricas de Laravel/Filament.
+Si hay conflicto entre "la forma Laravel" y "la regla de negocio", gana la regla de negocio.
+
+## Stack
+
+- PHP 8.5 / Laravel 12 / Filament v4 / Livewire v3
+- Shield + Spatie Permission (roles y permisos)
+- Tailwind CSS v4 / Pest v4
+- WorkOS (login panel Admin) / Email+Password (login panel Cliente)
+
+## Arquitectura de paneles
+
+- Panel Admin (`/admin`): solo usuarios tipo `user` (super admins). Login vía WorkOS.
+- Panel Cliente (`/cliente`): solo usuarios tipo `admin` con empresa asignada. Login email/password.
+- Usuarios tipo `employee`: sin acceso a paneles (solo app móvil, fase futura).
+- En desarrollo local: un solo `php artisan serve`, sin `APP_MODULE`.
+
+## Modelo de datos
+
+- Tabla única `users` con campo `tipo`: `user`, `admin`, `employee`.
+- Tabla `empresas` (catálogo de Rafa). Relación N:M con `users` vía `empresa_user`.
+- Toda la nomenclatura de tablas y campos en **español**, excepto términos técnicos
+  (`token`, `api_key`, `created_at`, `updated_at`, `workos_id`).
+- Los modelos usan `casts()` como método, no como propiedad `$casts`.
+
+## Roles y permisos
+
+- Roles con `company_id`: `admin_empresa`, `rh_empresa`, `gestor_catalogos`, `consultor_catalogos`.
+- Rol global `super_admin` (`company_id` null) tiene TODOS los permisos.
+- Formato de permisos: `Accion:Recurso` (ej: `View:Empleado`, `Create:Empresa`).
+- En panel Cliente: siempre verificar permiso + pertenencia a empresa.
+- `super_admin` no requiere validación de empresa.
+
+## Seguridad y filtrado
+
+- Middleware `ScopeByCompany`: filtra automáticamente por empresa en consultas.
+- Middleware `EnsurePanelAccessByUserType`: redirige al panel correcto según tipo.
+- Todas las políticas validan: permiso + `canAccessEmpresa()` (excepto super_admin).
+
+## Reglas de implementación
+
+### Al crear un módulo nuevo
+
+1. PRIMERO consulta al agente paco-legacy para obtener la ficha técnica del módulo.
+2. Crea modelo, migración, factory, seeder y resource de Filament.
+3. Usa `php artisan make:` con `--no-interaction` para scaffolding.
+4. Las migraciones se ejecutan normales (create directo, sin `hasTable`/`hasColumn`).
+5. Crea Form Request para validación, nunca inline en controllers.
+6. Escribe tests con Pest (feature tests por defecto, `--unit` solo si aplica).
+
+### Prioridad de la lógica de negocio
+
+- Si la ficha del legacy dice que un campo es obligatorio, es obligatorio en la migración
+  Y en la validación Y en el form de Filament, sin excepciones.
+- Si la ficha dice que un flujo requiere pasos específicos, el resource debe reflejarlo
+  (wizard, tabs, o lo que sea necesario).
+- Si la ficha marca algo como "⚠️ AMBIGUO", NO lo implementes — pide clarificación.
+- Si la ficha marca algo como "🔧 DEUDA TÉCNICA", NO lo repliques. Implementa la versión limpia.
+
+### Filament Resources
+
+- Siempre verifica archivos hermanos (sibling resources) antes de crear uno nuevo.
+- Reutiliza componentes existentes.
+- Para panel Cliente, todos los listados DEBEN filtrarse por empresa del usuario.
+- Para panel Admin (super_admin), se ve todo sin filtro.
+- Usa eager loading para prevenir N+1.
+
+### Código
+
+- Variables y métodos descriptivos: `isRegisteredForDiscounts`, no `discount()`.
+- PHP 8 constructor promotion.
+- Return types y type hints siempre explícitos.
+- PHPDoc blocks con array shapes cuando aplique.
+- Ejecutar `vendor/bin/pint --dirty --format agent` después de modificar PHP.
+- No crear archivos de documentación a menos que se pida explícitamente.
+- Documentar métodos con PHPDoc: descripción de qué hace, `@param` para cada parámetro, `@return` con tipo. Mínimo en métodos públicos; en privados si la lógica no es obvia.
+
+### Base de datos
+
+- Eloquent primero, `DB::` nunca. Usar `Model::query()`.
+- Relaciones con return type hints.
+- Al modificar columnas, la migración DEBE incluir TODOS los atributos previos.
+- Factories con estados útiles para tests.
+
+### Frontend
+
+- Tailwind v4 con convenciones existentes del proyecto.
+- Si un cambio no se ve en UI, preguntar si corrió `npm run build` / `npm run dev`.
+
+### Testing
+
+- Pest v4. Feature tests por defecto.
+- Usar factories con estados custom antes de setup manual.
+- `php artisan test --compact` para correr, `--filter=` para filtrar.
+- No borrar tests sin aprobación.
+
+## Flujo de trabajo con paco-legacy
+
+Cuando recibas información del agente paco-legacy (ficha técnica de módulo),
+tu respuesta debe seguir este orden:
+
+1. **Confirmar entendimiento**: "Entendido, el módulo [X] tiene [N] entidades,
+   [N] reglas de negocio y [N] validaciones."
+2. **Señalar ambigüedades**: si la ficha tiene items ⚠️, pedir clarificación ANTES de implementar.
+3. **Proponer plan**: listar los archivos que vas a crear/modificar.
+4. **Implementar**: crear modelo → migración → factory → seeder → resource → tests.
+5. **Verificar**: correr pint + tests.
+
+## Lo que NO debes hacer
+
+- NO crear migraciones idempotentes (sin `hasTable`/`hasColumn` defensivos).
+- NO inventar reglas de negocio que no vengan del legacy.
+- NO cambiar dependencias del proyecto sin aprobación.
+- NO crear carpetas nuevas fuera de la estructura existente.
+- NO usar `env()` fuera de archivos config.
+- NO hacer inline validation en controllers.
+- NO crear scripts de verificación si los tests cubren la funcionalidad.

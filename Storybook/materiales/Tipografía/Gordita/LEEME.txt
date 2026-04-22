@@ -1,0 +1,2 @@
+Copia aqui los archivos de fuente referenciados en stylesheet.css (p. ej. Gordita-Bold.ttf).
+Luego registra la ruta en hooks/usePacoFonts.ts con useFonts o loadAsync y apunta a assets/fonts si Metro lo requiere.

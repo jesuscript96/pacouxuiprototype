@@ -1,0 +1,206 @@
+---
+description: Arquitectura de Users y Colaboradores - Jerarquía, relaciones y acceso a datos RH
+globs: ["app/Models/User.php", "app/Models/Colaborador.php", "app/Services/**/*.php", "app/Filament/**/*.php", "database/migrations/*.php", "database/seeders/*.php"]
+alwaysApply: true
+---
+
+# Arquitectura: Users y Colaboradores
+
+## Conceptos clave
+
+| Término | Tabla | Propósito |
+|---------|-------|-----------|
+| **Cuenta** | `users` | Usuario autenticado, verificado, con acceso al sistema |
+| **Ficha RH** | `colaboradores` | Datos de recursos humanos del empleado |
+
+## Jerarquía (regla de oro)
+```
+users (CUENTA - punto de entrada para queries de usuarios verificados)
+  ├── empresa_id → empresas (empresa principal)
+  ├── colaborador_id → colaboradores (enlace a ficha RH)
+  └── tipo (JSON: administrador, cliente, colaborador)
+
+colaboradores (FICHA RH - fuente canónica de datos de empleado)
+  ├── empresa_id → empresas (para App móvil)
+  ├── departamento_id → departamentos
+  ├── puesto_id → puestos
+  ├── region_id → regiones
+  ├── area_id → areas
+  ├── ubicacion_id → ubicaciones
+  ├── centro_pago_id → centros_pago
+  ├── razon_social_id → razones_sociales
+  └── datos personales y laborales
+```
+
+## Fuente canónica de datos RH
+
+**La fuente canónica de datos RH es `colaboradores`, NO `users`.**
+
+Aunque `users` tiene columnas duplicadas (`departamento_id`, `region_id`, etc.) por razones históricas, el código nuevo debe:
+
+1. **Leer datos RH desde `colaborador`:** `$user->colaborador->departamento`
+2. **NO leer desde `users` directamente:** ~~`$user->departamento`~~ ❌
+
+## Accessors delegados en User.php
+
+User.php tiene accessors que delegan a `colaborador` para compatibilidad:
+```php
+// Estos accessors existen para compatibilidad, pero PREFIERE usar la ruta explícita
+$user->region           // → Accessor que retorna $user->colaborador?->region
+$user->departamento     // → Accessor que retorna $user->colaborador?->departamento
+
+// PREFERIDO en código nuevo:
+$user->colaborador->region
+$user->colaborador->departamento
+```
+
+## Queries correctas
+
+### Para listar empleados VERIFICADOS de una empresa:
+```php
+// ✅ CORRECTO: Partir de users, filtrar por colaborador
+User::where('empresa_id', $empresaId)
+    ->whereHas('colaborador')
+    ->with('colaborador.region', 'colaborador.departamento')
+    ->get();
+
+// ✅ CORRECTO: Usando scope
+User::colaboradoresDeEmpresa($empresaId)
+    ->with('colaborador.departamento')
+    ->get();
+```
+
+### Para filtrar por catálogos RH:
+```php
+// ✅ CORRECTO: Filtrar vía colaborador
+User::whereHas('colaborador', fn($q) => $q->where('region_id', $regionId))
+    ->get();
+
+// ❌ INCORRECTO: Filtrar directamente en users
+User::where('region_id', $regionId)->get();
+```
+
+### Para eager loading de catálogos:
+```php
+// ✅ CORRECTO
+User::with('colaborador.region', 'colaborador.departamento')->get();
+
+// ❌ DEPRECADO (funciona por accessors, pero evitar en código nuevo)
+User::with('region', 'departamento')->get();
+```
+
+## Creación de colaboradores
+
+SIEMPRE usar `ColaboradorService`:
+```php
+// ✅ CORRECTO
+$colaborador = app(ColaboradorService::class)->crearColaborador([
+    'nombre' => 'Test',
+    'email' => 'test@empresa.com',
+    'empresa_id' => $empresa->id,
+    'departamento_id' => $departamento->id,
+    // ...
+]);
+
+// ❌ INCORRECTO
+User::create([...]);  // Sin ficha
+Colaborador::create([...]);  // Sin vincular a user
+```
+
+## Relaciones en User.php
+
+### ✅ Relaciones válidas (mantener):
+- `empresa()` → BelongsTo Empresa
+- `empresas()` → BelongsToMany (pivot)
+- `colaborador()` → BelongsTo Colaborador
+- `roles()` → Spatie
+
+### ⚠️ Relaciones deprecadas (usar vía colaborador):
+- `departamento()` → Usar `$user->colaborador->departamento`
+- `puesto()` → Usar `$user->colaborador->puesto`
+- `region()` → Usar `$user->colaborador->region`
+- `area()` → Usar `$user->colaborador->area`
+- `ubicacion()` → Usar `$user->colaborador->ubicacion`
+- `centroPago()` → Usar `$user->colaborador->centroPago`
+- `razonSocial()` → Usar `$user->colaborador->razonSocial`
+
+## NO hacer en código nuevo
+```php
+// ❌ NO usar relaciones directas de User a catálogos
+$user->region->nombre
+$user->departamento_id
+
+// ❌ NO filtrar por columnas RH en users
+User::where('departamento_id', $id)
+
+// ❌ NO crear User con tipo colaborador sin ficha
+User::create(['tipo' => ['colaborador'], ...])  // Sin ColaboradorService
+
+// ❌ NO asignar datos RH directamente en users
+$user->departamento_id = $id;
+$user->save();
+```
+
+## SÍ hacer en código nuevo
+```php
+// ✅ Acceder a catálogos vía colaborador
+$user->colaborador->region->nombre
+$user->colaborador->departamento_id
+
+// ✅ Filtrar vía whereHas
+User::whereHas('colaborador', fn($q) => $q->where('departamento_id', $id))
+
+// ✅ Usar ColaboradorService para crear
+app(ColaboradorService::class)->crearColaborador($data)
+
+// ✅ Actualizar datos RH en colaborador
+$user->colaborador->update(['departamento_id' => $id]);
+```
+
+## Decisión de FK: ¿`user_id` o `colaborador_id`?
+
+La relación principal en tecben-core es hacia `users`, NO hacia `colaboradores`.
+Pero hay excepciones según el caso de uso.
+
+### Regla de decisión
+
+| Caso | FK correcta | Ejemplo |
+|------|-------------|---------|
+| Funcionalidad para usuarios con acceso al sistema | `user_id` | Cuentas bancarias, estados de cuenta, filtros guardados |
+| Datos de nómina/HR sin acceso requerido | `colaborador_id` | Cartas SUA, beneficiarios, cuentas nómina |
+| Registros donde el actor es un usuario autenticado | `user_id` (o `creado_por`) | Importaciones, vacantes, mensajes |
+| Candidatos externos (reclutamiento) | Ni `user_id` ni `colaborador_id` | Candidatos reclutamiento (tabla propia) |
+| Documentos HR asignados a la ficha del empleado | `colaborador_id` | Documentos corporativos, historiales |
+| Módulos en transición legacy→nuevo | Ambos (`user_id` + `colaborador_id`) | Historiales, beneficiarios (fase temporal) |
+
+### Cómo decidir
+```
+¿El registro REQUIERE que la persona tenga acceso al sistema?
+  → SÍ → user_id
+  → NO → ¿Es un dato de nómina/HR vinculado a la ficha del empleado?
+    → SÍ → colaborador_id
+    → NO → ¿Es un actor externo sin cuenta?
+      → SÍ → Tabla propia sin FK a users ni colaboradores
+      → NO → Consultar con Rafa
+```
+
+### NO hacer
+```php
+// ❌ Usar colaborador_id para funcionalidades que requieren login
+$tabla->foreignId('colaborador_id'); // Si la persona DEBE estar logueada
+
+// ❌ Usar user_id para documentos HR masivos
+$tabla->foreignId('user_id'); // Si el documento se genera para TODOS los empleados
+                               // (muchos no tendrán cuenta)
+
+// ❌ Asumir sin analizar — siempre aplicar la regla de decisión
+```
+
+## Checklist para módulos nuevos que involucren empleados
+
+- [ ] ¿Necesito usuarios verificados? → Query desde `User::whereHas('colaborador')`
+- [ ] ¿Necesito datos RH? → Acceder vía `$user->colaborador->X`
+- [ ] ¿Estoy filtrando por catálogos? → Usar `whereHas('colaborador', ...)`
+- [ ] ¿Estoy creando colaboradores? → Usar `ColaboradorService`
+- [ ] ¿Estoy usando `$user->region` directamente? → Cambiar a `$user->colaborador->region`
+- [ ] ¿Mi tabla nueva tiene FK a persona? → Aplicar regla de decisión `user_id` vs `colaborador_id`

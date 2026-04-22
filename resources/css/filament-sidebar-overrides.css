@@ -1,0 +1,1353 @@
+/* ============================================================
+ * RENOVACIÓN UI — INTEGRADO Y LIMPIO
+ *
+ * Objetivos:
+ *  - Sidebar: tono claro, apenas un escalón más oscuro que el contenido
+ *  - Máximo aprovechamiento del espacio horizontal
+ *  - Tabla integrada en la página (sin "caja flotante")
+ *  - Aspecto unificado: sidebar + contenido + tabla fluyen juntos
+ *  - Navegación rectangular compacta (no pills)
+ *
+ * Colores de marca conservados: primario #3148c8
+ * ============================================================ */
+
+/* ─────────────────────────────────────────────
+   PALETA
+────────────────────────────────────────────── */
+:root {
+    /* sidebar: apenas más oscuro que el contenido */
+    --sidebar-bg:          #edf0f7;
+    --sidebar-border:      #d8dde8;
+    --sidebar-hover-bg:    #dde3ef;
+    --sidebar-active-bg:   rgba(49, 72, 200, 0.09);
+    --sidebar-active-ring: rgba(49, 72, 200, 0.22);
+    --sidebar-text-muted:  #94a3b8;
+    --sidebar-text:        #64748b;
+    --sidebar-text-hover:  #1e293b;
+    --sidebar-text-active: #3148c8;
+    --sidebar-icon-active: #3148c8;
+
+    /* contenido: blanco */
+    --content-bg:    #f7f9fc;
+    --card-bg:       #ffffff;
+    --card-border:   #e4e8f0;
+    --card-radius:   0.5rem;
+
+    /* topbar */
+    --topbar-bg:     #ffffff;
+    --topbar-border: #e4e8f0;
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR — ESTRUCTURA
+────────────────────────────────────────────── */
+
+.fi-sidebar {
+    background-color: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+}
+
+.fi-sidebar-header {
+    background-color: var(--sidebar-bg) !important;
+    border-bottom: 1px solid var(--sidebar-border) !important;
+}
+
+.fi-sidebar-footer {
+    background-color: var(--sidebar-bg) !important;
+    border-top: 1px solid var(--sidebar-border) !important;
+}
+
+.fi-sidebar-nav {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sidebar-border) transparent;
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR — SELECTOR DE EMPRESA
+────────────────────────────────────────────── */
+
+.fi-tenant-menu-trigger {
+    background-color: #ffffff !important;
+    border: 1px solid var(--sidebar-border) !important;
+    border-radius: 0.375rem !important;
+    color: #374151 !important;
+    padding: 0.4375rem 0.75rem !important;
+    margin: 0 0.75rem !important;
+    width: calc(100% - 1.5rem) !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+}
+
+.fi-tenant-menu-trigger:hover {
+    background-color: #f8fafc !important;
+    border-color: #b8c4d8 !important;
+}
+
+.fi-tenant-name {
+    color: #374151 !important;
+    font-weight: 500 !important;
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR — GRUPOS
+────────────────────────────────────────────── */
+
+.fi-sidebar-nav-groups {
+    row-gap: 0.125rem !important;
+    padding: 0.5rem 0 !important;
+}
+
+.fi-sidebar-group-label {
+    color: var(--sidebar-text-muted) !important;
+    font-size: 0.625rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.075em !important;
+    padding: 0.75rem 1rem 0.25rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   SIDEBAR — ITEMS
+────────────────────────────────────────────── */
+
+.fi-sidebar-item .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: var(--sidebar-text) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 400 !important;
+}
+
+.fi-sidebar-item .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: #94a3b8 !important;
+    width: 1rem !important;
+    height: 1rem !important;
+}
+
+.fi-sidebar-item > .fi-sidebar-item-btn {
+    border-radius: 0.375rem !important;
+    padding-top: 0.375rem !important;
+    padding-bottom: 0.375rem !important;
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+    transition: background-color 120ms ease !important;
+}
+
+/* hover */
+.fi-sidebar-item > .fi-sidebar-item-btn:hover {
+    background-color: var(--sidebar-hover-bg) !important;
+}
+
+.fi-sidebar-item:hover .fi-sidebar-item-btn .fi-sidebar-item-label,
+.fi-sidebar-item:hover .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: var(--sidebar-text-hover) !important;
+}
+
+/* activo */
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background-color: var(--sidebar-active-bg) !important;
+    border-radius: 0.375rem !important;
+    box-shadow: inset 0 0 0 1px var(--sidebar-active-ring) !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn .fi-sidebar-item-label {
+    color: var(--sidebar-text-active) !important;
+    font-weight: 500 !important;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn .fi-sidebar-item-icon {
+    color: var(--sidebar-icon-active) !important;
+}
+
+.fi-sidebar-item:hover.fi-active .fi-sidebar-item-btn {
+    background-color: rgba(49, 72, 200, 0.14) !important;
+}
+
+/* badge */
+.fi-sidebar-item .fi-sidebar-item-badge-ctn .fi-badge {
+    background-color: #e0e7ff !important;
+    color: #3730a3 !important;
+    border-radius: 9999px !important;
+    font-size: 0.625rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   TOPBAR
+────────────────────────────────────────────── */
+
+.fi-topbar {
+    background-color: var(--topbar-bg) !important;
+    border-bottom: 1px solid var(--topbar-border) !important;
+    box-shadow: none !important;
+}
+
+/* ─────────────────────────────────────────────
+   CUERPO Y ÁREA DE CONTENIDO
+────────────────────────────────────────────── */
+
+/* Fondo del body igual al sidebar para que se unifiquen */
+.fi-body {
+    background-color: var(--sidebar-bg) !important;
+}
+
+/* Contenido principal: blanco/casi-blanco, sin border-radius ni bordes */
+.fi-main-ctn {
+    background-color: var(--content-bg) !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+/*
+ * Padding mínimo: el contenido arranca casi en el borde.
+ * Cada sección maneja su propio padding interno.
+ */
+.fi-main {
+    padding-inline: 0 !important;
+    padding-top: 0 !important;
+}
+
+/* Zona superior de la página (heading + breadcrumbs + acciones) */
+.fi-header {
+    padding-inline: 1.25rem !important;
+    padding-top: 1.25rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   TABLA — CARD REFINADA
+   Tarjeta blanca con borde sutil y sombra leve
+────────────────────────────────────────────── */
+
+/* Contenedor exterior: fondo neutro, borde visible, radio moderado */
+.fi-ta {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 0.625rem !important;
+    padding: 0 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
+    overflow: hidden !important;
+}
+
+/* Contenedor interior: sin borde redundante */
+.fi-ta-ctn {
+    background-color: var(--card-bg) !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Toolbar (búsqueda, filtros, acciones): fondo ligeramente tintado */
+.fi-ta-header-toolbar {
+    background-color: #fafbfe !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    padding: 0.625rem 1rem !important;
+}
+
+/* Header de columnas */
+.fi-ta-ctn table thead tr th {
+    background-color: #f8fafd !important;
+    border-bottom: 1px solid var(--card-border) !important;
+    font-size: 0.6875rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    color: #94a3b8 !important;
+}
+
+/* Separador sutil entre filas */
+.fi-ta-ctn table tbody tr:not(:last-child) td {
+    border-bottom: 1px solid #f1f5fb !important;
+}
+
+/* Row hover — resalte azul muy suave */
+.fi-ta-ctn table tbody tr:hover td {
+    background-color: #f5f8ff !important;
+}
+
+/* Pie de tabla (paginación) */
+.fi-ta-ctn .fi-ta-footer {
+    background-color: #fafbfe !important;
+    border-top: 1px solid var(--card-border) !important;
+    padding: 0.5rem 1rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   SECCIONES / FORMULARIOS
+   Sí usan card con borde — son elementos editables
+────────────────────────────────────────────── */
+
+.fi-section {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-inline: 1.25rem !important;
+}
+
+.fi-sc-section {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: var(--card-radius) !important;
+    padding: 0 !important;
+}
+
+.fi-section-header {
+    border-bottom: 1px solid var(--card-border) !important;
+    padding: 0.875rem 1.25rem !important;
+}
+
+.fi-section-header-heading {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+}
+
+.fi-section-content-ctn {
+    padding: 1.25rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   PÁGINA HEADING
+────────────────────────────────────────────── */
+
+.fi-header-heading {
+    font-size: 1.125rem !important;
+    font-weight: 600 !important;
+    color: #1e293b !important;
+    letter-spacing: -0.01em !important;
+}
+
+.fi-header-subheading {
+    font-size: 0.8125rem !important;
+    color: #64748b !important;
+}
+
+/* ─────────────────────────────────────────────
+   BREADCRUMBS
+────────────────────────────────────────────── */
+
+.fi-breadcrumbs-item-label {
+    font-size: 0.8125rem !important;
+    color: #94a3b8 !important;
+}
+
+.fi-breadcrumbs-item.fi-active .fi-breadcrumbs-item-label {
+    color: #475569 !important;
+    font-weight: 500 !important;
+}
+
+/* ─────────────────────────────────────────────
+   MODALES
+────────────────────────────────────────────── */
+
+.fi-modal-window {
+    border-radius: var(--card-radius) !important;
+    border: 1px solid var(--card-border) !important;
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.10), 0 4px 16px -4px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ─────────────────────────────────────────────
+   DROPDOWNS
+────────────────────────────────────────────── */
+
+.fi-dropdown-panel {
+    border: 1px solid var(--card-border) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.07), 0 1px 4px -1px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ─────────────────────────────────────────────
+   TABS
+────────────────────────────────────────────── */
+
+.fi-tabs {
+    padding-inline: 1.25rem !important;
+    padding-top: 0 !important;
+}
+
+.fi-tabs-tab {
+    border-radius: 0.25rem !important;
+    font-size: 0.8125rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   WIDGETS (DASHBOARD)
+────────────────────────────────────────────── */
+
+.fi-wi-stats-overview-stat,
+.fi-wi-chart {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: var(--card-radius) !important;
+    box-shadow: none !important;
+}
+
+/* Stat cards — barra de color superior por color de la stat */
+.fi-wi-stats-overview-stat:has(.fi-color-primary) {
+    border-top: 3px solid #3148c8 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-success) {
+    border-top: 3px solid #16a34a !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-danger) {
+    border-top: 3px solid #dc2626 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-warning) {
+    border-top: 3px solid #d97706 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-info) {
+    border-top: 3px solid #0284c7 !important;
+}
+
+/* Valor principal — más grande y prominente */
+.fi-wi-stats-overview-stat-value {
+    font-size: 2.25rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.03em !important;
+    line-height: 1 !important;
+}
+
+/* Valor coloreado según el tema de la stat */
+.fi-wi-stats-overview-stat:has(.fi-color-primary) .fi-wi-stats-overview-stat-value {
+    color: #3148c8 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-success) .fi-wi-stats-overview-stat-value {
+    color: #16a34a !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-danger) .fi-wi-stats-overview-stat-value {
+    color: #dc2626 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-warning) .fi-wi-stats-overview-stat-value {
+    color: #d97706 !important;
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-info) .fi-wi-stats-overview-stat-value {
+    color: #0284c7 !important;
+}
+
+/* Etiqueta de la stat — un poco más legible */
+.fi-wi-stats-overview-stat-label {
+    font-size: 0.8125rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+}
+
+/* Ícono de la label — más visible */
+.fi-wi-stats-overview-stat-label-ctn .fi-icon {
+    color: #94a3b8 !important;
+}
+
+/* Descripción — ligeramente más compacta */
+.fi-wi-stats-overview-stat-description {
+    font-size: 0.8125rem !important;
+}
+
+/* Fondo muy suave en stat cards con color */
+.fi-wi-stats-overview-stat:has(.fi-color-primary) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-success) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-danger) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+}
+
+.fi-wi-stats-overview-stat:has(.fi-color-warning) {
+    background-color: rgba(255, 255, 255, 0.92) !important;
+    backdrop-filter: blur(8px);
+}
+
+/* ─────────────────────────────────────────────
+   PÁGINA SIMPLE (LOGIN, ETC.)
+────────────────────────────────────────────── */
+
+.fi-simple-main-ctn {
+    background-color: var(--content-bg) !important;
+}
+
+.fi-simple-main {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05) !important;
+    padding: 2rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   FIXES FUNCIONALES (CONSERVADOS)
+────────────────────────────────────────────── */
+
+[role="dialog"],
+[aria-modal="true"],
+.fi-modal-overlay,
+.fi-modal-content-wrapper {
+    z-index: 100 !important;
+}
+
+.fi-main-ctn:has(.fi-modal-open) {
+    z-index: 30 !important;
+}
+
+.fi-modal.fi-modal-slide-over .fi-modal-content {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+.fi-modal.fi-modal-slide-over .fi-section {
+    border-width: 0 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    margin-inline: 0 !important;
+}
+
+.fi-modal.fi-modal-slide-over .fi-section .fi-section-header {
+    border-bottom: none !important;
+    padding-inline: 0 !important;
+}
+
+.fi-modal.fi-modal-slide-over .fi-section .fi-section-content-ctn {
+    padding-inline: 0 !important;
+}
+
+.fi-modal.fi-modal-slide-over .fi-sc {
+    grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Filtros inline (documentos corporativos) */
+.fi-ta-doc-dest-filters-inline .fi-ta-filters-above-content-ctn > .fi-ta-filters {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.fi-ta-doc-dest-filters-inline .fi-ta-filters-above-content-ctn > .fi-ta-filters > .fi-ta-filters-header {
+    flex: 1 0 100%;
+}
+
+.fi-ta-doc-dest-filters-inline .fi-ta-filters-above-content-ctn > .fi-ta-filters > .fi-ta-filters-actions-ctn {
+    flex: 0 0 auto;
+}
+
+.fi-ta-doc-dest-filters-inline .fi-ta-filters-above-content-ctn > .fi-ta-filters > *:not(.fi-ta-filters-header):not(.fi-ta-filters-actions-ctn) {
+    flex: 1 1 0;
+    min-width: min(100%, 18rem);
+}
+
+/* ─────────────────────────────────────────────
+   TRANSICIONES Y MICRO-INTERACCIONES
+────────────────────────────────────────────── */
+
+/* Sidebar: colapso suave en escritorio */
+.fi-sidebar {
+    transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Sidebar items: transición más rica (ya existe 120ms, añadimos transform) */
+.fi-sidebar-item > .fi-sidebar-item-btn {
+    transition: background-color 150ms ease, box-shadow 150ms ease, transform 100ms ease !important;
+}
+
+/* Leve "presión" al hacer clic en item de sidebar */
+.fi-sidebar-item > .fi-sidebar-item-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* Botones globales: transición en color y sombra */
+.fi-btn {
+    transition: background-color 150ms ease, border-color 150ms ease,
+                color 150ms ease, box-shadow 150ms ease, transform 100ms ease !important;
+}
+
+/* Feedback táctil al presionar botón */
+.fi-btn:active {
+    transform: scale(0.97) !important;
+}
+
+/* Botón primario: sombra de elevación al hover */
+.fi-btn-color-primary:hover {
+    box-shadow: 0 4px 12px -2px rgba(49, 72, 200, 0.30) !important;
+}
+
+/* Botón primario outline + color danger: transición de color suave */
+.fi-btn-color-danger:hover {
+    box-shadow: 0 4px 12px -2px rgba(220, 38, 38, 0.20) !important;
+}
+
+/* Tabla: transición de elevación al hover del contenedor */
+.fi-ta {
+    transition: box-shadow 200ms ease !important;
+}
+
+.fi-ta:hover {
+    box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.08), 0 2px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Filas de tabla: transición de fondo */
+.fi-ta-ctn table tbody tr td {
+    transition: background-color 100ms ease !important;
+}
+
+/* Acciones de fila: visibles siempre pero más discretas en reposo */
+.fi-ta-ctn table tbody tr td .fi-dropdown-trigger,
+.fi-ta-ctn table tbody tr td .fi-ac-action-icon-btn {
+    opacity: 0.45;
+    transition: opacity 150ms ease, transform 150ms ease !important;
+}
+
+/* Al hover de la fila: acciones completamente visibles con leve deslizamiento */
+.fi-ta-ctn table tbody tr:hover td .fi-dropdown-trigger,
+.fi-ta-ctn table tbody tr:hover td .fi-ac-action-icon-btn {
+    opacity: 1 !important;
+    transform: none !important;
+}
+
+/* Tabs: transición en el indicador activo */
+.fi-tabs-tab {
+    transition: background-color 150ms ease, color 150ms ease !important;
+}
+
+/* Secciones/cards: transición de sombra */
+.fi-section {
+    transition: box-shadow 200ms ease !important;
+}
+
+/* Dropdowns: fade-in rápido */
+.fi-dropdown-panel {
+    animation: fi-dropdown-enter 150ms ease forwards;
+}
+
+@keyframes fi-dropdown-enter {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Modal/slide-over: fade-in suave */
+.fi-modal-window {
+    animation: fi-modal-enter 180ms ease forwards;
+}
+
+@keyframes fi-modal-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ─────────────────────────────────────────────
+   TIPOGRAFÍA — JERARQUÍA Y LEGIBILIDAD
+────────────────────────────────────────────── */
+
+/* Heading de página: más peso y tracking ajustado */
+.fi-header-heading {
+    font-size: 1.1875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.02em !important;
+}
+
+/* Encabezados de sección: legible pero compacto */
+.fi-section-header-heading {
+    font-size: 0.9375rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* Cuerpo de tabla: tamaño base más cómodo */
+.fi-ta-ctn table tbody tr td {
+    font-size: 0.875rem !important;
+}
+
+/* IDs y valores numéricos en tabla: fuente tabulada para alineación */
+.fi-ta-ctn table tbody tr td:first-child {
+    font-variant-numeric: tabular-nums !important;
+    letter-spacing: 0 !important;
+    color: #94a3b8 !important;
+    font-size: 0.8125rem !important;
+}
+
+/* Encabezados de columna: más definidos */
+.fi-ta-ctn table thead tr th {
+    font-size: 0.6875rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em !important;
+}
+
+/* ─────────────────────────────────────────────
+   PALETA REFINADA — ACENTOS Y PROFUNDIDAD
+────────────────────────────────────────────── */
+
+/* Sidebar: ligeramente más vivo (tono azulado frío) */
+:root {
+    --sidebar-bg:          #eef1f8;
+    --sidebar-hover-bg:    #e0e6f4;
+    --sidebar-active-bg:   rgba(49, 72, 200, 0.10);
+    --sidebar-active-ring: rgba(49, 72, 200, 0.25);
+}
+
+/* Botones de borde más generoso */
+.fi-btn {
+    border-radius: 0.5rem !important;
+}
+
+/* Badges de sidebar con colores más vivos */
+.fi-sidebar-item .fi-sidebar-item-badge-ctn .fi-badge {
+    background-color: #dbeafe !important;
+    color: #1d4ed8 !important;
+    font-weight: 700 !important;
+}
+
+/* Badge de estado "success" en tablas */
+.fi-badge-color-success {
+    background-color: #dcfce7 !important;
+    color: #15803d !important;
+}
+
+/* Badge "warning" en tablas */
+.fi-badge-color-warning {
+    background-color: #fef9c3 !important;
+    color: #854d0e !important;
+}
+
+/* Badge "danger" en tablas */
+.fi-badge-color-danger {
+    background-color: #fee2e2 !important;
+    color: #b91c1c !important;
+}
+
+/* Badge "info" en tablas */
+.fi-badge-color-info {
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
+}
+
+/* Badge "primary" en tablas */
+.fi-badge-color-primary {
+    background-color: #e0e7ff !important;
+    color: #3730a3 !important;
+}
+
+/* Badge "gray" en tablas */
+.fi-badge-color-gray {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+}
+
+/* Badges en general — más redondeados y con padding generoso */
+.fi-badge {
+    border-radius: 9999px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.01em !important;
+    font-size: 0.7rem !important;
+    padding: 0.2rem 0.6rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   WIDGET TABLES — HEADINGS COLOREADOS
+────────────────────────────────────────────── */
+
+/* Heading del widget table (🎂 Cumpleaños, 🏅 Aniversarios, ⚠️ Bajas) */
+.fi-wi-ta .fi-header-heading,
+.fi-wi-table-widget .fi-header-heading {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+
+/* Tabla toolbar en widgets — fondo más integrado */
+.fi-wi-ta .fi-ta-header-toolbar {
+    background-color: #fafbfe !important;
+}
+
+/* ─────────────────────────────────────────────
+   ACCESOS RÁPIDOS — WIDGET CONTENEDOR
+────────────────────────────────────────────── */
+
+/* El widget de accesos rápidos no necesita borde del wrapper externo */
+.fi-wi:has(.grid.grid-cols-2) > .fi-widget-ctn,
+.fi-wi:has(.grid.grid-cols-2) {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* ─────────────────────────────────────────────
+   EMPTY STATES — ESTILO CONSISTENTE
+────────────────────────────────────────────── */
+
+/* Contenedor del empty state: más espacio y centrado */
+.fi-ta-empty-state {
+    padding: 3rem 1.5rem !important;
+}
+
+/* Icono del empty state: color primario suave */
+.fi-ta-empty-state-icon {
+    color: #c7d2fe !important;
+    width: 3rem !important;
+    height: 3rem !important;
+}
+
+/* Heading del empty state */
+.fi-ta-empty-state-heading {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin-top: 0.75rem !important;
+}
+
+/* Descripción del empty state */
+.fi-ta-empty-state-description {
+    font-size: 0.875rem !important;
+    color: #6b7280 !important;
+    margin-top: 0.25rem !important;
+}
+
+/* ─────────────────────────────────────────────
+   DASHBOARD — HERO CARDS Y MÉTRICAS
+────────────────────────────────────────────── */
+
+/* Hero cards: entrada con fade + slide */
+.dash-hero-card {
+    animation: dash-hero-enter 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dash-hero-card:nth-child(1) { animation-delay: 0ms; }
+.dash-hero-card:nth-child(2) { animation-delay: 100ms; }
+.dash-hero-card:nth-child(3) { animation-delay: 200ms; }
+
+@keyframes dash-hero-enter {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Metric cards: entrada escalonada */
+.dash-metric {
+    animation: dash-metric-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dash-metric:nth-child(1) { animation-delay: 200ms; }
+.dash-metric:nth-child(2) { animation-delay: 260ms; }
+.dash-metric:nth-child(3) { animation-delay: 320ms; }
+.dash-metric:nth-child(4) { animation-delay: 380ms; }
+.dash-metric:nth-child(5) { animation-delay: 440ms; }
+.dash-metric:nth-child(6) { animation-delay: 500ms; }
+.dash-metric:nth-child(7) { animation-delay: 560ms; }
+.dash-metric:nth-child(8) { animation-delay: 620ms; }
+
+@keyframes dash-metric-enter {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Progress bars: animación de llenado */
+.dash-progress {
+    animation: dash-fill 1.2s cubic-bezier(0.22, 1, 0.36, 1) 500ms both;
+}
+
+@keyframes dash-fill {
+    from { width: 0; }
+}
+
+/* Dashboard: ritmo vertical y padding del contenedor de widgets */
+.fi-page .fi-page-content .fi-wi-group {
+    padding-inline: 1.25rem !important;
+    padding-block: 0.75rem 2rem !important;
+    gap: 1.75rem !important;
+}
+
+@media (min-width: 640px) {
+    .fi-page .fi-page-content .fi-wi-group {
+        padding-inline: 1.75rem !important;
+        gap: 2rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .fi-page .fi-page-content .fi-wi-group {
+        padding-inline: 2rem !important;
+    }
+}
+
+/* Dashboard: los widgets "showroom" no necesitan card wrapper */
+.fi-wi:has(.dash-showroom) > .fi-widget-ctn,
+.fi-wi:has(.dash-showroom),
+.fi-wi:has(.dash-hero-card) > .fi-widget-ctn,
+.fi-wi:has(.dash-hero-card),
+.fi-wi:has(.dash-metric) > .fi-widget-ctn,
+.fi-wi:has(.dash-metric) {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* ─────────────────────────────────────────────
+   DASHBOARD SHOWROOM — banner bienvenida, timeline, etc.
+────────────────────────────────────────────── */
+
+/* Banner institucional: brillo muy suave (sin “neón” radial) */
+.dash-banner {
+    animation: dash-banner-enter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    position: relative;
+}
+
+.dash-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse 85% 65% at 12% 8%, rgba(255, 255, 255, 0.45), transparent 52%);
+    pointer-events: none;
+    opacity: 0.55;
+}
+
+@keyframes dash-banner-enter {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+
+/* Timeline items: entrada escalonada desde la izquierda */
+.dash-timeline-item {
+    animation: dash-timeline-enter 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.dash-timeline-item:nth-child(1) { animation-delay: 80ms; }
+.dash-timeline-item:nth-child(2) { animation-delay: 160ms; }
+.dash-timeline-item:nth-child(3) { animation-delay: 240ms; }
+.dash-timeline-item:nth-child(4) { animation-delay: 320ms; }
+.dash-timeline-item:nth-child(5) { animation-delay: 400ms; }
+.dash-timeline-item:nth-child(6) { animation-delay: 480ms; }
+.dash-timeline-item:nth-child(7) { animation-delay: 560ms; }
+.dash-timeline-item:nth-child(8) { animation-delay: 640ms; }
+
+@keyframes dash-timeline-enter {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Sparkline: trazo progresivo */
+.dash-sparkline path {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: dash-sparkline-draw 1.2s cubic-bezier(0.22, 1, 0.36, 1) 300ms both;
+}
+
+@keyframes dash-sparkline-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Breakdown bars: llenado progresivo */
+.dash-breakdown-bar {
+    animation: dash-fill 1s cubic-bezier(0.22, 1, 0.36, 1) 400ms both;
+}
+
+/* Tarjetas de acción pendiente: hover lateral */
+.dash-action-card {
+    transition:
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 200ms ease;
+}
+
+.dash-action-card:hover {
+    transform: translateX(3px);
+}
+
+/* Ritmo de títulos de sección */
+.dash-section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.dash-section-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #3148c8;
+}
+
+/* Separador de sección (sin degradado llamativo) */
+.dash-section-rule {
+    height: 1px;
+    flex: 1 1 0%;
+    min-width: 0.75rem;
+    background-color: rgba(203, 213, 225, 0.85);
+}
+
+/* Tarjetas hero / vitrinas: vidrio esmerilado sobre fondo claro */
+.dash-glass-hero {
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    background: linear-gradient(
+        160deg,
+        rgba(255, 255, 255, 0.78) 0%,
+        rgba(255, 255, 255, 0.55) 42%,
+        rgba(238, 242, 255, 0.62) 100%
+    );
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.7) inset,
+        0 28px 72px -38px rgba(15, 23, 42, 0.12);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dash-banner,
+    .dash-timeline-item,
+    .dash-sparkline path,
+    .dash-breakdown-bar {
+        animation: none !important;
+    }
+}
+
+/* ─────────────────────────────────────────────
+   STORYBOOK (panel Cliente) — padding, ritmo y micro-interacciones
+   Solo afecta a contenedores con .sb-storybook
+────────────────────────────────────────────── */
+
+@keyframes sb-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sb-storybook .sb-panel {
+    position: relative;
+    transition:
+        box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 200ms ease;
+}
+
+.sb-storybook .sb-panel.sb-fade-up {
+    animation: sb-fade-up 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.sb-storybook .sb-panel.sb-fade-up:nth-child(1) { animation-delay: 0ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(2) { animation-delay: 55ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(3) { animation-delay: 110ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(4) { animation-delay: 165ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(5) { animation-delay: 220ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(6) { animation-delay: 275ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(7) { animation-delay: 330ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(8) { animation-delay: 385ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(9) { animation-delay: 440ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(10) { animation-delay: 495ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(11) { animation-delay: 550ms; }
+.sb-storybook .sb-panel.sb-fade-up:nth-child(12) { animation-delay: 605ms; }
+
+.sb-storybook .sb-panel:hover {
+    transform: translateY(-3px);
+    box-shadow:
+        0 12px 28px -8px rgba(49, 72, 200, 0.14),
+        0 4px 12px -4px rgba(15, 23, 42, 0.08);
+    border-color: rgba(49, 72, 200, 0.28) !important;
+}
+
+.sb-storybook .sb-panel:active {
+    transform: translateY(-1px);
+}
+
+/* Swatches / mini tiles en Storybook */
+.sb-storybook .sb-swatch {
+    cursor: default;
+    transition:
+        transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 200ms ease;
+}
+
+.sb-storybook .sb-swatch:hover {
+    transform: scale(1.04);
+    box-shadow: 0 8px 20px -6px rgba(49, 72, 200, 0.2);
+}
+
+/* Tablas demo dentro del Storybook */
+.sb-storybook .sb-demo-table tbody tr {
+    transition: background-color 120ms ease;
+}
+
+.sb-storybook .sb-demo-table tbody tr:hover td {
+    background-color: #f5f8ff !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sb-storybook .sb-panel.sb-fade-up,
+    .sb-storybook .sb-swatch {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .sb-storybook .sb-panel:hover {
+        transform: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────
+   ANALÍTICOS · SHOWROOM DE VISUALIZACIÓN DE DATOS
+   ──────────────────────────────────────────────────────── */
+
+/* El layout general no envuelve las tarjetas del showroom */
+.fi-wi:has(> .an-showroom) {
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+}
+
+/* Animación de entrada suave para cada tile */
+.an-kpi,
+.an-section > .grid > *,
+.an-section > .rounded-2xl {
+    animation: an-fade-up 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-section > *:nth-child(1) { animation-delay: 60ms; }
+.an-section > *:nth-child(2) { animation-delay: 120ms; }
+.an-section > *:nth-child(3) { animation-delay: 180ms; }
+.an-section > *:nth-child(4) { animation-delay: 240ms; }
+.an-section > *:nth-child(5) { animation-delay: 300ms; }
+
+@keyframes an-fade-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Barras horizontales: crecimiento desde 0 */
+@keyframes an-bar-grow {
+    from { width: 0 !important; }
+}
+
+.an-bar-grow {
+    animation: an-bar-grow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-bar-grow-origin-right {
+    transform-origin: right center;
+    animation: an-bar-grow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Donut / arco: animar el dasharray */
+@keyframes an-donut-draw {
+    from { stroke-dashoffset: 1000; opacity: 0.2; }
+}
+
+.an-donut-seg {
+    animation: an-donut-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Anillos de progreso (OKRs) */
+.an-ring {
+    animation: an-donut-draw 1100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Área y líneas tipo path (dibujo progresivo) */
+.an-area-draw {
+    animation: an-fade-up 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Radar chart polygons */
+@keyframes an-radar-grow {
+    from { transform: scale(0.4); opacity: 0; transform-origin: center; }
+    to { transform: scale(1); opacity: 1; transform-origin: center; }
+}
+
+.an-radar-draw {
+    transform-origin: 180px 180px;
+    animation: an-radar-grow 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Sparkline: dibujo progresivo del path con stroke-dasharray */
+.an-sparkline path {
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+    animation: an-sparkline-draw 1200ms cubic-bezier(0.22, 1, 0.36, 1) 200ms forwards;
+}
+
+@keyframes an-sparkline-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+/* Heatmap cells: aparición escalonada */
+.an-heat-cell {
+    animation: an-fade-up 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Pulso del dot final del área chart */
+.an-pulse-dot {
+    animation: an-pulse 2s ease-in-out infinite;
+    transform-origin: center;
+}
+
+@keyframes an-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.6; }
+}
+
+/* Gauge: animar el llenado */
+.an-gauge-fill {
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: an-sparkline-draw 1300ms cubic-bezier(0.22, 1, 0.36, 1) 200ms forwards;
+}
+
+.an-needle {
+    transform-origin: 110px 110px;
+    animation: an-needle-rotate 1300ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes an-needle-rotate {
+    from { transform: rotate(-90deg); }
+    to { transform: rotate(0deg); }
+}
+
+/* Treemap tiles: escalonado */
+.an-treemap-tile {
+    animation: an-fade-up 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.an-treemap-tile:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.12);
+}
+
+/* Funnel bars crecen desde el centro */
+@keyframes an-funnel-grow {
+    from { opacity: 0; transform: scaleX(0.6); }
+    to { opacity: 1; transform: scaleX(1); }
+}
+
+.an-funnel-bar {
+    transform-origin: center;
+    animation: an-funnel-grow 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Burbujas: pop-in */
+.an-bubble {
+    animation: an-bubble-pop 800ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    transform-origin: center;
+}
+
+.an-bubble:nth-child(1) { animation-delay: 50ms; }
+.an-bubble:nth-child(2) { animation-delay: 100ms; }
+.an-bubble:nth-child(3) { animation-delay: 150ms; }
+.an-bubble:nth-child(4) { animation-delay: 200ms; }
+.an-bubble:nth-child(5) { animation-delay: 250ms; }
+.an-bubble:nth-child(6) { animation-delay: 300ms; }
+.an-bubble:nth-child(7) { animation-delay: 350ms; }
+.an-bubble:nth-child(8) { animation-delay: 400ms; }
+
+@keyframes an-bubble-pop {
+    from { opacity: 0; transform: scale(0); }
+    60% { transform: scale(1.08); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* Timeline items: escalonado */
+.an-timeline-item {
+    animation: an-fade-up 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.an-timeline-item:nth-child(1) { animation-delay: 100ms; }
+.an-timeline-item:nth-child(2) { animation-delay: 180ms; }
+.an-timeline-item:nth-child(3) { animation-delay: 260ms; }
+.an-timeline-item:nth-child(4) { animation-delay: 340ms; }
+.an-timeline-item:nth-child(5) { animation-delay: 420ms; }
+
+/* Tabs sticky — hover/focus de los botones (ya tienen transición inline) */
+.an-tabs button[aria-selected="true"] {
+    box-shadow: 0 6px 18px -8px rgba(15, 23, 42, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .an-kpi,
+    .an-section > .grid > *,
+    .an-section > .rounded-2xl,
+    .an-donut-seg,
+    .an-ring,
+    .an-area-draw,
+    .an-radar-draw,
+    .an-sparkline path,
+    .an-heat-cell,
+    .an-gauge-fill,
+    .an-needle,
+    .an-treemap-tile,
+    .an-funnel-bar,
+    .an-bubble,
+    .an-timeline-item,
+    .an-bar-grow,
+    .an-bar-grow-origin-right {
+        animation: none !important;
+    }
+
+    .an-sparkline path,
+    .an-gauge-fill {
+        stroke-dashoffset: 0 !important;
+    }
+
+    .an-pulse-dot {
+        animation: none !important;
+    }
+}
+
+/* ────────────────────────────────────────────────────────
+   UX PROTOTYPE · hero + tabs sobrios estilo Storybook
+   ──────────────────────────────────────────────────────── */
+
+.ux-hero {
+    animation: ux-hero-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes ux-hero-in {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ux-hero {
+        animation: none !important;
+    }
+}

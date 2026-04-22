@@ -1,0 +1,130 @@
+---
+description: Validar dependencias antes de permitir eliminación - Proteger registros que están siendo usados en otros procesos
+globs: ["app/Models/**/*.php", "app/Filament/**/*.php", "app/Policies/**/*.php"]
+alwaysApply: true
+---
+
+# Regla: No borrar registros en uso
+
+## Principio
+
+Un registro de catálogo o entidad principal **NO debe poder eliminarse** si está siendo referenciado por otros registros en el sistema.
+
+Esto aplica a:
+- Catálogos (departamentos, puestos, ubicaciones, áreas, etc.)
+- Entidades principales (empresas, colaboradores, etc.)
+- Cualquier tabla que sea FK de otra
+
+## Implementación
+
+### 1. En el Modelo: Método `tieneRegistrosAsociados()`
+```php
+/**
+ * BL: Verifica si este registro está siendo usado en otros procesos.
+ * Si retorna true, el registro NO debe poder eliminarse.
+ */
+public function tieneRegistrosAsociados(): bool
+{
+    // Verificar cada relación que depende de este registro
+    return $this->colaboradores()->exists()
+        || $this->usuarios()->exists()
+        || $this->otrasRelaciones()->exists();
+}
+```
+
+### 2. En el Resource Filament: Ocultar botón de borrar
+```php
+// En la tabla (Tables/{Modelo}Table.php)
+Tables\Actions\DeleteAction::make()
+    ->visible(fn ($record) => !$record->tieneRegistrosAsociados()),
+
+// O usar hidden
+Tables\Actions\DeleteAction::make()
+    ->hidden(fn ($record) => $record->tieneRegistrosAsociados()),
+```
+
+### 3. En la Policy: Validar en delete()
+```php
+public function delete(User $user, Modelo $record): bool
+{
+    // Primero verificar permiso
+    if (!$user->can('Delete:Modelo')) {
+        return false;
+    }
+    
+    // Luego verificar que no tenga registros asociados
+    return !$record->tieneRegistrosAsociados();
+}
+```
+
+### 4. En el Modelo: Prevenir eliminación a nivel de base de datos
+```php
+protected static function booted(): void
+{
+    static::deleting(function ($record) {
+        if ($record->tieneRegistrosAsociados()) {
+            throw new \Exception(
+                "No se puede eliminar este registro porque está siendo utilizado en otros procesos."
+            );
+        }
+    });
+}
+```
+
+## Checklist al crear un catálogo nuevo
+
+- [ ] Identificar qué otras tablas tienen FK a este catálogo
+- [ ] Crear método `tieneRegistrosAsociados()` que verifique esas relaciones
+- [ ] Ocultar `DeleteAction` en la tabla si tiene registros asociados
+- [ ] Validar en Policy `delete()` que no tenga registros asociados
+- [ ] (Opcional) Agregar hook `deleting` como última línea de defensa
+- [ ] Agregar tooltip o mensaje explicando por qué no se puede borrar
+
+## Ejemplo completo: Departamento
+```php
+// app/Models/Departamento.php
+public function tieneRegistrosAsociados(): bool
+{
+    return $this->colaboradores()->exists()
+        || $this->usuarios()->exists()
+        || $this->puestos()->exists();
+}
+
+protected static function booted(): void
+{
+    static::deleting(function (Departamento $departamento) {
+        if ($departamento->tieneRegistrosAsociados()) {
+            throw new \Exception(
+                "No se puede eliminar el departamento '{$departamento->nombre}' porque tiene colaboradores, usuarios o puestos asignados."
+            );
+        }
+    });
+}
+
+// app/Filament/Cliente/Resources/Departamentos/Tables/DepartamentosTable.php
+Tables\Actions\DeleteAction::make()
+    ->hidden(fn (Departamento $record) => $record->tieneRegistrosAsociados())
+    ->tooltip(fn (Departamento $record) => $record->tieneRegistrosAsociados() 
+        ? 'No se puede eliminar porque tiene registros asociados' 
+        : null),
+```
+
+## Interacción con Bajas de Colaboradores
+
+Cuando un colaborador es dado de baja:
+- El colaborador **NO se elimina** de la tabla `colaboradores`
+- Se crea un registro en `bajas_colaboradores`
+- El colaborador queda con estado inactivo
+- Los catálogos que usaba siguen contando ese colaborador como "en uso"
+
+Por lo tanto:
+- Un departamento con colaboradores dados de baja **SÍ tiene registros asociados**
+- Solo se puede eliminar un catálogo si NO tiene ningún colaborador (activo o inactivo)
+- Si se necesita eliminar un catálogo con colaboradores inactivos, primero se debe decidir qué hacer con esos registros históricos
+
+## NO hacer
+
+- ❌ NO permitir eliminar catálogos sin verificar dependencias
+- ❌ NO confiar solo en `ON DELETE RESTRICT` de la BD (mostrar mensaje amigable)
+- ❌ NO usar soft delete como solución a este problema (es diferente)
+- ❌ NO eliminar colaboradores al dar de baja (se archivan, no se borran)
