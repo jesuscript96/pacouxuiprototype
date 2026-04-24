@@ -13,6 +13,8 @@ import { AnaliticosHomePage } from './pages/ux/AnaliticosHomePage'
 import { BajasColaboradoresPage } from './pages/ux/bajas/BajasColaboradoresPage'
 import { CartasSuaPage } from './pages/ux/cartas-sua/CartasSuaPage'
 import { CatalogosPage } from './pages/ux/catalogos/CatalogosPage'
+import { EmpresaWizardPage } from './pages/ux/catalogos/empresas/EmpresaWizardPage'
+import { ListEmpresasPage } from './pages/ux/catalogos/empresas/ListEmpresasPage'
 import { ColaboradoresUxPage } from './pages/ux/colaboradores/ColaboradoresUxPage'
 import { DocumentosPage } from './pages/ux/documentos/DocumentosPage'
 import { RolesUxPage } from './pages/ux/roles/RolesUxPage'
@@ -51,6 +53,9 @@ export default function App() {
           <Route path="/ux/analiticos/:segment" element={<TableauPlaceholderPage />} />
           <Route path="/ux/solicitudes" element={<SolicitudesPage />} />
           <Route path="/ux/catalogos" element={<CatalogosPage />} />
+          <Route path="/ux/catalogos/empresas" element={<ListEmpresasPage />} />
+          <Route path="/ux/catalogos/empresas/nueva" element={<EmpresaWizardPage />} />
+          <Route path="/ux/catalogos/empresas/:id/editar" element={<EmpresaWizardPage />} />
           <Route path="/ux/documentos-corporativos" element={<DocumentosPage />} />
           <Route path="/ux/cartas-sua" element={<CartasSuaPage />} />
           <Route path="/ux/colaboradores" element={<ColaboradoresUxPage />} />

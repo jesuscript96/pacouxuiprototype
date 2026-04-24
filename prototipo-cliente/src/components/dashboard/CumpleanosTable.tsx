@@ -1,4 +1,8 @@
 import { CalendarDaysIcon } from '@heroicons/react/24/outline'
+import type { ColumnDef } from '@tanstack/react-table'
+import { useMemo } from 'react'
+
+import { DataTable } from '@/components/data-table/data-table'
 
 const mes = new Intl.DateTimeFormat('es-MX', { month: 'long' }).format(new Date())
 
@@ -8,7 +12,38 @@ const rows = [
   { colaborador: 'Ana Lucía Herrera', departamento: 'Tecnología', cumple: '28 de abril' },
 ]
 
+type Row = (typeof rows)[number]
+
 export function CumpleanosTable() {
+  const columns = useMemo<ColumnDef<Row>[]>(
+    () => [
+      {
+        id: 'colaborador',
+        header: 'Colaborador',
+        cell: ({ row }) => <span className="font-medium text-slate-800">{row.original.colaborador}</span>,
+      },
+      {
+        id: 'departamento',
+        header: 'Departamento',
+        cell: ({ row }) => (
+          <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+            {row.original.departamento}
+          </span>
+        ),
+      },
+      {
+        id: 'cumple',
+        header: 'Cumpleaños',
+        cell: ({ row }) => (
+          <span className="inline-flex rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-100">
+            {row.original.cumple}
+          </span>
+        ),
+      },
+    ],
+    [],
+  )
+
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-sm">
       <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-3">
@@ -18,32 +53,13 @@ export function CumpleanosTable() {
         </h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-slate-100">
-              <th className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Colaborador</th>
-              <th className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Departamento</th>
-              <th className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-slate-400">Cumpleaños</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {rows.map((r) => (
-              <tr key={r.colaborador}>
-                <td className="px-4 py-2.5 font-medium text-slate-800">{r.colaborador}</td>
-                <td className="px-4 py-2.5">
-                  <span className="inline-flex rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-                    {r.departamento}
-                  </span>
-                </td>
-                <td className="px-4 py-2.5">
-                  <span className="inline-flex rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-100">
-                    {r.cumple}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable
+          columns={columns}
+          data={rows}
+          getRowId={(r) => r.colaborador}
+          headerRowClassName="border-b border-slate-100 hover:bg-transparent"
+          bodyRowClassName="border-b border-slate-50 transition-colors hover:bg-slate-50/50"
+        />
       </div>
     </div>
   )

@@ -1,13 +1,11 @@
-import {
-  EyeIcon,
-  PencilSquareIcon,
-  PlusIcon,
-  TrashIcon,
-} from '@heroicons/react/24/outline'
+import { PlusIcon } from '@heroicons/react/24/outline'
 import { useMemo, useState } from 'react'
 import { ConfirmDialog } from '../../components/ConfirmDialog'
 import { CrudSlideOver } from '../../components/CrudSlideOver'
 import { ProtoDataTable, type ProtoColumn } from '../../components/ProtoDataTable'
+import { UxCrudRowActions } from '../../components/ux/UxCrudRowActions'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 type Row = {
   id: number
@@ -138,14 +136,10 @@ export function MockResourcePage({
             Datos de demostración — el alta y la edición abren en un panel lateral.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#3148c8] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#2a3db0] sm:inline-flex"
-        >
+        <Button type="button" onClick={openCreate} className="gap-2 font-semibold shadow-sm sm:inline-flex">
           <PlusIcon className="h-4 w-4" />
           Nuevo {singular.toLowerCase()}
-        </button>
+        </Button>
       </div>
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
@@ -154,35 +148,18 @@ export function MockResourcePage({
           rows={rows}
           rowKey={(r) => r.id}
           actions={(row) => (
-            <div className="flex justify-end gap-1">
-              <button
-                type="button"
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-[#3148c8]"
-                aria-label="Ver"
-                onClick={() => openView(row)}
-              >
-                <EyeIcon className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-indigo-700"
-                aria-label="Editar"
-                onClick={() => openEdit(row)}
-              >
-                <PencilSquareIcon className="h-5 w-5" />
-              </button>
-              <button
-                type="button"
-                className="rounded-lg p-2 text-slate-500 hover:bg-red-50 hover:text-red-600"
-                aria-label="Eliminar"
-                onClick={() => {
-                  setPendingDelete(row)
-                  setConfirmOpen(true)
-                }}
-              >
-                <TrashIcon className="h-5 w-5" />
-              </button>
-            </div>
+            <UxCrudRowActions
+              onView={() => {
+                openView(row)
+              }}
+              onEdit={() => {
+                openEdit(row)
+              }}
+              onDelete={() => {
+                setPendingDelete(row)
+                setConfirmOpen(true)
+              }}
+            />
           )}
         />
       </div>
@@ -194,30 +171,18 @@ export function MockResourcePage({
         footer={
           mode === 'view' ? (
             <div className="flex justify-end">
-              <button
-                type="button"
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                onClick={() => setPanelOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setPanelOpen(false)}>
                 Cerrar
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="flex flex-wrap justify-end gap-2">
-              <button
-                type="button"
-                className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-                onClick={() => setPanelOpen(false)}
-              >
+              <Button type="button" variant="outline" onClick={() => setPanelOpen(false)}>
                 Cancelar
-              </button>
-              <button
-                type="button"
-                className="rounded-lg bg-[#3148c8] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2a3db0]"
-                onClick={save}
-              >
+              </Button>
+              <Button type="button" onClick={save} className="font-semibold">
                 Guardar
-              </button>
+              </Button>
             </div>
           )
         }
@@ -227,9 +192,9 @@ export function MockResourcePage({
             <label className="block text-sm font-medium text-slate-700" htmlFor="nombre">
               {nameFieldLabel}
             </label>
-            <input
+            <Input
               id="nombre"
-              className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm shadow-sm focus:border-[#3148c8] focus:outline-none focus:ring-2 focus:ring-[#3148c8]/20 disabled:bg-slate-50"
+              className="mt-1 shadow-sm disabled:bg-muted/50"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={mode === 'view'}

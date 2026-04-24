@@ -1,5 +1,8 @@
 import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/react/24/outline'
 
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+
 type Props = {
   /** Título del recurso en plural (ej. «Regiones») — encima de la tabla. */
   heading: string
@@ -33,28 +36,25 @@ export function FilamentListToolbar({
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative min-w-[12rem] flex-1 sm:max-w-xs">
             <MagnifyingGlassIcon
-              className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
+              className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
               aria-hidden
             />
-            <input
+            <Input
               type="search"
               value={searchValue}
               onChange={(e) => onSearchChange(e.target.value)}
               placeholder={searchPlaceholder}
-              className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#3148c8] focus:outline-none focus:ring-2 focus:ring-[#3148c8]/20"
+              className="h-9 w-full pl-9 shadow-sm"
+              aria-label={searchPlaceholder}
             />
           </div>
-          <button
-            type="button"
-            onClick={onNew}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#3148c8] px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#2a3db0]"
-          >
+          <Button type="button" size="default" className="shrink-0 gap-1.5 font-semibold" onClick={onNew}>
             <PlusIcon className="h-4 w-4" aria-hidden />
             {newLabel}
-          </button>
+          </Button>
         </div>
       </div>
-      {hint ? <p className="text-xs text-slate-500">{hint}</p> : null}
+      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
     </div>
   )
 }

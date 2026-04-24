@@ -80,6 +80,23 @@ export const UX_CATALOGOS: GuidanceContent = g({
   referenciaReglasCursor: REF_UXUI_MDC,
 })
 
+export const UX_CATALOGOS_EMPRESAS: GuidanceContent = g({
+  title: 'Catálogo de empresas (asistente)',
+  summary:
+    'Listado en una ruta y alta/edición en página dedicada con pasos, barra de progreso clicable, tarjetas y revelado progresivo. El borrador se guarda en localStorage en la demo.',
+  bulletsCuandoUsar: [
+    'Formularios muy extensos (decenas de toggles y repeaters) donde un slide-over agota la altura útil.',
+    'Cuando el usuario debe revisar bloques temáticos sin perder el sentido del avance (contrato, comisiones, integraciones…).',
+  ],
+  bulletsEvitar: [
+    'No duplicar la misma lógica de validación condicional en React y en Filament sin una fuente de verdad en backend.',
+  ],
+  equivalenteFilament: [
+    'Resource con `Wizard` + `Section` por paso; `CatalogSlideOver` no sustituye a un wizard para este volumen.',
+  ],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
 export const UX_DOCUMENTOS_HERO: GuidanceContent = g({
   title: 'Biblioteca corporativa',
   summary:

@@ -1,8 +1,11 @@
-import type { ReactNode } from 'react'
+import type { ColumnDef } from '@tanstack/react-table'
+import { useMemo, type ReactNode } from 'react'
+
+import { DataTable } from '@/components/data-table/data-table'
 
 type Column = { key: string; header: string; className?: string }
 
-/** Tabla estilo listado Filament — mock para reemplazar Livewire en prototipo. */
+/** Tabla estilo listado Filament — TanStack Table + componentes shadcn/ui. */
 export function MockFilamentTable({
   columns,
   rows,
@@ -11,7 +14,6 @@ export function MockFilamentTable({
 }: {
   columns: Column[]
   rows: Record<string, ReactNode>[]
-  /** Columna final con Ver / Editar / Eliminar como en Filament. */
   actionsColumn?: {
     header?: string
     className?: string
@@ -21,58 +23,58 @@ export function MockFilamentTable({
 }) {
   const showActions = Boolean(actionsColumn)
 
+  const columnDefs = useMemo<ColumnDef<Record<string, ReactNode>>[]>(() => {
+    const dataCols: ColumnDef<Record<string, ReactNode>>[] = columns.map((c) => ({
+      id: c.key,
+      header: c.header,
+      cell: ({ row }) => row.original[c.key],
+      meta: {
+        headerClassName: c.className,
+        cellClassName: c.className,
+      },
+    }))
+    if (!showActions || !actionsColumn) {
+      return dataCols
+    }
+    const ac = actionsColumn
+    const actionsCol: ColumnDef<Record<string, ReactNode>> = {
+      id: '__actions',
+      header:
+        ac.header === undefined
+          ? () => <span className="sr-only">Acciones</span>
+          : ac.header,
+      cell: ({ row }) => ac.render(row.original, row.index),
+      meta: {
+        headerClassName: cnHeaderActions(ac.className),
+        cellClassName: cnCellActions(ac.className),
+      },
+    }
+    return [...dataCols, actionsCol]
+  }, [columns, showActions, actionsColumn])
+
   return (
     <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="-mx-4 overflow-x-auto sm:mx-0">
-        <table className="min-w-full divide-y divide-slate-200 text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              {columns.map((c) => (
-                <th
-                  key={c.key}
-                  scope="col"
-                  className={
-                    'px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 ' +
-                    (c.className ?? '')
-                  }
-                >
-                  {c.header}
-                </th>
-              ))}
-              {showActions ? (
-                <th
-                  scope="col"
-                  className={
-                    'w-px whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 ' +
-                    (actionsColumn?.className ?? '')
-                  }
-                >
-                  {actionsColumn?.header ?? 'Acciones'}
-                </th>
-              ) : null}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {rows.map((row, i) => (
-              <tr
-                key={rowKey ? rowKey(row, i) : i}
-                className="hover:bg-slate-50/80"
-              >
-                {columns.map((c) => (
-                  <td key={c.key} className="whitespace-nowrap px-4 py-3 text-slate-800">
-                    {row[c.key]}
-                  </td>
-                ))}
-                {showActions ? (
-                  <td className="whitespace-nowrap px-4 py-3 text-right text-slate-800">
-                    {actionsColumn!.render(row, i)}
-                  </td>
-                ) : null}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <DataTable
+        columns={columnDefs}
+        data={rows}
+        getRowId={(row, index) => String(rowKey ? rowKey(row, index) : index)}
+        tableClassName="min-w-full divide-y divide-slate-200 text-sm"
+        headerClassName="bg-slate-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500"
+        cellClassName="whitespace-nowrap px-4 py-3 text-slate-800"
+        bodyRowClassName="transition-colors hover:bg-slate-50/80"
+        headerRowClassName="hover:bg-transparent"
+      />
     </div>
   )
+}
+
+function cnHeaderActions(extra?: string): string {
+  return (
+    'w-px whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 ' +
+    (extra ?? '')
+  )
+}
+
+function cnCellActions(extra?: string): string {
+  return 'whitespace-nowrap px-4 py-3 text-right text-slate-800 ' + (extra ?? '')
 }

@@ -9,7 +9,13 @@ import {
   XCircleIcon,
 } from '@heroicons/react/24/outline'
 import type { ComponentType, FC, ReactNode, SVGProps } from 'react'
+import { useEffect, useState } from 'react'
 import { DevGuidanceInline } from '../../components/DevGuidanceInline'
+import { MockFilamentTable } from '../../components/ux/MockFilamentTable'
+import { ProtoSelect } from '../../components/ux/ProtoSelect'
+import { TableIconActionButtons } from '../../components/ux/TableIconActionButtons'
+import { UxCrudRowActions } from '../../components/ux/UxCrudRowActions'
+import { UxWizardProgress } from '../../components/ux/UxWizardProgress'
 import { DevVariantHint } from '../../components/DevVariantHint'
 import { StorybookShell } from '../../components/StorybookShell'
 import { HINT_GLASS_NEUTRAL, HINT_GLASS_PRIMARY, HINT_GLASS_SECONDARY } from '../../guidance/glassSurfaceHints'
@@ -412,18 +418,107 @@ export const IconosPage: FC = () => (
   </StorybookShell>
 )
 
-export const SelectsPage: FC = () => (
-  <StorybookShell>
-    <SbPanel title="Select y combobox" subtitle="Searchable en listas largas">
-      <label className="mb-1.5 block text-sm font-medium text-slate-700">Departamento</label>
-      <select className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-[#3148c8] focus:outline-none focus:ring-2 focus:ring-[#3148c8]/20">
-        <option>Operaciones</option>
-        <option>Recursos Humanos</option>
-        <option>Tecnología</option>
-      </select>
-    </SbPanel>
-  </StorybookShell>
-)
+const DEPT_OPTIONS = [
+  { value: 'ops', label: 'Operaciones' },
+  { value: 'rh', label: 'Recursos Humanos' },
+  { value: 'tech', label: 'Tecnología' },
+]
+
+const REGION_OPTIONS = [
+  { value: 'norte', label: 'Norte' },
+  { value: 'centro', label: 'Centro' },
+  { value: 'sur', label: 'Sur' },
+]
+
+export const SelectsPage: FC = () => {
+  const [dept, setDept] = useState('')
+  const [region, setRegion] = useState('norte')
+
+  return (
+    <StorybookShell>
+      <div className="space-y-10 sm:space-y-12">
+        <SbPanel
+          title="ProtoSelect (Radix)"
+          subtitle="Listado flotante, foco accesible y estilo alineado al panel (#3148c8). Usar en wizard de empresas y formularios UX en lugar del select nativo."
+        >
+          <div className="grid max-w-xl gap-6">
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-slate-700">Departamento (valor vacío permitido)</label>
+              <ProtoSelect
+                value={dept}
+                onValueChange={setDept}
+                options={DEPT_OPTIONS}
+                aria-label="Departamento"
+              />
+              <p className="mt-1.5 text-xs text-slate-500">Valor actual: {dept === '' ? '∅ vacío' : dept}</p>
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-slate-700">Región (sin opción vacía)</label>
+              <ProtoSelect
+                allowEmpty={false}
+                value={region}
+                onValueChange={setRegion}
+                options={REGION_OPTIONS}
+                aria-label="Región"
+              />
+            </div>
+          </div>
+        </SbPanel>
+        <SbPanel
+          title="Select HTML nativo (legacy)"
+          subtitle="Aspecto dependiente del SO/navegador. Evitar en flujos nuevos; conservado solo como referencia."
+        >
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">Departamento</label>
+          <select className="w-full max-w-md rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-[#3148c8] focus:outline-none focus:ring-2 focus:ring-[#3148c8]/20">
+            <option>Operaciones</option>
+            <option>Recursos Humanos</option>
+            <option>Tecnología</option>
+          </select>
+        </SbPanel>
+      </div>
+    </StorybookShell>
+  )
+}
+
+const WIZARD_DEMO_STEPS = [
+  { id: 'd1', label: 'Identidad y contacto', shortLabel: 'Contacto' },
+  { id: 'd2', label: 'Contrato y comisiones', shortLabel: 'Contrato' },
+  { id: 'd3', label: 'Razones sociales', shortLabel: 'RFC' },
+  { id: 'd4', label: 'Productos e integraciones', shortLabel: 'Productos' },
+  { id: 'd5', label: 'Marca y notificaciones', shortLabel: 'Marca' },
+  { id: 'd6', label: 'Operación avanzada', shortLabel: 'Avanzado' },
+] as const
+
+export const WizardProgresoPage: FC = () => {
+  const [step, setStep] = useState(2)
+  const [visited, setVisited] = useState(() => new Set<number>([0, 1, 2]))
+
+  useEffect(() => {
+    setVisited((prev) => new Set(prev).add(step))
+  }, [step])
+
+  return (
+    <StorybookShell>
+      <SbPanel
+        title="UxWizardProgress"
+        subtitle="Barra de avance + segmentos entre bolitas + etiqueta bajo cada paso. Reutilizable; mismo componente que el wizard de empresas."
+      >
+        <div className="max-w-4xl rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50/90 p-6 shadow-sm">
+          <UxWizardProgress
+            steps={[...WIZARD_DEMO_STEPS]}
+            currentIndex={step}
+            onStepClick={setStep}
+            visitedIndices={visited}
+          />
+        </div>
+        <p className="mt-4 max-w-2xl text-xs leading-relaxed text-slate-500">
+          Cada paso es un botón: prueba a saltar adelante y atrás. Los trazos entre bolitas se rellenan hasta el paso
+          actual; las bolitas completadas muestran check.
+        </p>
+      </SbPanel>
+    </StorybookShell>
+  )
+}
 
 export const CheckboxesPage: FC = () => (
   <StorybookShell>
@@ -608,35 +703,98 @@ export const ModalesPageFull: FC = () => (
 
 export const TablasPageFull: FC = () => (
   <StorybookShell>
-    <SbPanel title="Tabla de datos" subtitle="Listados integrados al layout">
-      <div className="overflow-x-auto rounded-xl border border-slate-200">
-        <table className="sb-demo-table min-w-full text-sm">
-          <thead className="bg-slate-50">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Nombre</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Email</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Estado</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-100">
-            {[
-              ['Ana López', 'ana@empresa.com', 'Activo'],
-              ['Luis Pérez', 'luis@empresa.com', 'Activo'],
-            ].map(([n, e, s]) => (
-              <tr key={n as string}>
-                <td className="px-4 py-3 font-medium">{n}</td>
-                <td className="px-4 py-3 text-slate-600">{e}</td>
-                <td className="px-4 py-3">
-                  <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200/80">
-                    {s}
-                  </span>
-                </td>
+    <div className="space-y-10 sm:space-y-12">
+      <SbPanel title="Tabla de datos" subtitle="Listados integrados al layout">
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="sb-demo-table min-w-full text-sm">
+            <thead className="bg-slate-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Nombre</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Email</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-500">Estado</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </SbPanel>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {[
+                ['Ana López', 'ana@empresa.com', 'Activo'],
+                ['Luis Pérez', 'luis@empresa.com', 'Activo'],
+              ].map(([n, e, s]) => (
+                <tr key={n as string}>
+                  <td className="px-4 py-3 font-medium">{n}</td>
+                  <td className="px-4 py-3 text-slate-600">{e}</td>
+                  <td className="px-4 py-3">
+                    <span className="inline-flex rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-800 ring-1 ring-emerald-200/80">
+                      {s}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </SbPanel>
+
+      <SbPanel
+        title="Menú ⋮ de accesos directos"
+        subtitle="Un control por fila (alineado a la derecha) con Ver, Editar y Eliminar en desplegable; equivalente visual a ActionGroup de Filament. En el prototipo UX se usa en `MockFilamentTable` y en `UxCrudRowActions`."
+      >
+        <div className="space-y-8">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">UxCrudRowActions</p>
+            <MockFilamentTable
+              columns={[
+                { key: 'nombre', header: 'Nombre' },
+                { key: 'email', header: 'Correo' },
+                { key: 'rol', header: 'Rol' },
+              ]}
+              rows={[
+                { nombre: 'Ana López', email: 'ana@empresa.com', rol: 'RH' },
+                { nombre: 'Luis Pérez', email: 'luis@empresa.com', rol: 'Colaborador' },
+              ]}
+              rowKey={(_row, i) => i}
+              actionsColumn={{
+                render: () => (
+                  <UxCrudRowActions
+                    onView={() => undefined}
+                    onEdit={() => undefined}
+                    onDelete={() => undefined}
+                  />
+                ),
+              }}
+            />
+          </div>
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              TableIconActionButtons (lista configurable)
+            </p>
+            <MockFilamentTable
+              columns={[
+                { key: 'doc', header: 'Documento' },
+                { key: 'tipo', header: 'Tipo' },
+              ]}
+              rows={[
+                { doc: 'Manual de bienvenida', tipo: 'PDF' },
+                { doc: 'Código de ética', tipo: 'PDF' },
+              ]}
+              rowKey={(_row, i) => i}
+              actionsColumn={{
+                header: '',
+                render: () => (
+                  <TableIconActionButtons
+                    actions={[
+                      { id: 'ver', tone: 'view', label: 'Ver', onClick: () => undefined },
+                      { id: 'desc', tone: 'download', label: 'Descargar', onClick: () => undefined },
+                      { id: 'dup', tone: 'duplicate', label: 'Duplicar', onClick: () => undefined },
+                      { id: 'del', tone: 'delete', label: 'Eliminar', onClick: () => undefined },
+                    ]}
+                  />
+                ),
+              }}
+            />
+          </div>
+        </div>
+      </SbPanel>
+    </div>
   </StorybookShell>
 )
 

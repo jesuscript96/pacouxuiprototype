@@ -1,7 +1,7 @@
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { paths, STORYBOOK_PAGES, type StorybookSlug } from '../navigation/config'
+import { paths, STORYBOOK_PAGES, UX_PARENT_LABELS, type StorybookSlug } from '../navigation/config'
 import { clsx } from '../utils/cn'
 
 const UX_LINKS: {
@@ -15,7 +15,16 @@ const UX_LINKS: {
     to: paths.analiticos,
   },
   { label: 'Solicitudes', parent: 'Solicitudes', to: paths.solicitudes },
-  { label: 'Catálogos', parent: 'Catálogos Colaboradores', to: paths.catalogos },
+  {
+    label: 'Estructura organizacional',
+    parent: 'Catálogos Colaboradores',
+    to: paths.catalogos,
+  },
+  {
+    label: 'Empresas',
+    parent: UX_PARENT_LABELS.catalogoEmpresas,
+    to: paths.catalogosEmpresas,
+  },
   { label: 'Colaboradores', parent: 'Gestión de personal', to: paths.colaboradores },
   { label: 'Bajas', parent: 'Gestión de personal', to: paths.bajas },
   { label: 'Vacantes', parent: 'Reclutamiento', to: paths.vacantes },

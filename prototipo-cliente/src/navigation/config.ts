@@ -20,6 +20,7 @@ export type StorybookSlug =
   | 'date-pickers'
   | 'notificaciones'
   | 'modales'
+  | 'wizard-progreso'
 
 export type StorybookEntry = {
   slug: StorybookSlug
@@ -47,6 +48,7 @@ export const STORYBOOK_PAGES: StorybookEntry[] = [
   { slug: 'date-pickers', label: 'Date pickers', sort: 17 },
   { slug: 'notificaciones', label: 'Notificaciones', sort: 18 },
   { slug: 'modales', label: 'Modales', sort: 19 },
+  { slug: 'wizard-progreso', label: 'Progreso wizard', sort: 20 },
 ]
 
 export function isStorybookSlug(s: string): s is StorybookSlug {
@@ -67,6 +69,9 @@ export const paths = {
   analiticosReport: (segment: string) => `/ux/analiticos/${segment}`,
   solicitudes: '/ux/solicitudes',
   catalogos: '/ux/catalogos',
+  catalogosEmpresas: '/ux/catalogos/empresas',
+  catalogosEmpresaNueva: '/ux/catalogos/empresas/nueva',
+  catalogosEmpresaEditar: (id: string) => `/ux/catalogos/empresas/${encodeURIComponent(id)}/editar`,
   documentos: '/ux/documentos-corporativos',
   cartasSua: '/ux/cartas-sua',
   colaboradores: '/ux/colaboradores',
@@ -79,6 +84,7 @@ export const UX_PARENT_LABELS = {
   analiticos: 'Analíticos',
   solicitudes: 'Solicitudes',
   catalogosColab: 'Catálogos Colaboradores',
+  catalogoEmpresas: 'Catálogo de empresas',
   gestionPersonal: 'Gestión de personal',
   reclutamiento: 'Reclutamiento',
   cartasSua: 'Cartas SUA',

@@ -1,4 +1,18 @@
-import { EyeIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
+import {
+  EllipsisVerticalIcon,
+  EyeIcon,
+  PencilSquareIcon,
+  TrashIcon,
+} from '@heroicons/react/24/outline'
+
+import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 type Props = {
   onView?: () => void
@@ -6,39 +20,69 @@ type Props = {
   onDelete?: () => void
 }
 
-const btn =
-  'rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3148c8]/30'
-
 /**
- * Acciones de fila estilo listado Filament (ver / editar / eliminar) — solo UI de prototipo.
+ * Menú de accesos directos (⋮) estilo listado Filament — solo UI de prototipo.
  */
 export function UxCrudRowActions({ onView, onEdit, onDelete }: Props) {
+  const hasAny = Boolean(onView || onEdit || onDelete)
+  if (!hasAny) {
+    return null
+  }
+
+  const showSepBeforeDelete = Boolean(onDelete && (onView || onEdit))
+
   return (
-    <div className="flex justify-end gap-0.5">
-      <button
-        type="button"
-        className={`${btn} hover:text-[#3148c8]`}
-        aria-label="Ver"
-        onClick={onView}
-      >
-        <EyeIcon className="h-5 w-5" />
-      </button>
-      <button
-        type="button"
-        className={`${btn} hover:text-indigo-700`}
-        aria-label="Editar"
-        onClick={onEdit}
-      >
-        <PencilSquareIcon className="h-5 w-5" />
-      </button>
-      <button
-        type="button"
-        className={`${btn} hover:bg-red-50 hover:text-red-600`}
-        aria-label="Eliminar"
-        onClick={onDelete}
-      >
-        <TrashIcon className="h-5 w-5" />
-      </button>
+    <div className="flex justify-end">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-slate-500 hover:text-slate-800"
+            aria-label="Acciones del registro"
+          >
+            <EllipsisVerticalIcon className="h-5 w-5" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="min-w-[11rem]">
+          {onView ? (
+            <DropdownMenuItem
+              className="gap-2"
+              onClick={() => {
+                onView()
+              }}
+            >
+              <EyeIcon className="h-4 w-4 text-slate-500" />
+              Ver
+            </DropdownMenuItem>
+          ) : null}
+          {onEdit ? (
+            <DropdownMenuItem
+              className="gap-2"
+              onClick={() => {
+                onEdit()
+              }}
+            >
+              <PencilSquareIcon className="h-4 w-4 text-slate-500" />
+              Editar
+            </DropdownMenuItem>
+          ) : null}
+          {showSepBeforeDelete ? <DropdownMenuSeparator /> : null}
+          {onDelete ? (
+            <DropdownMenuItem
+              variant="destructive"
+              className="gap-2"
+              onClick={() => {
+                onDelete()
+              }}
+            >
+              <TrashIcon className="h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          ) : null}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import { EyeIcon, PencilSquareIcon, PlusIcon, TrashIcon, UsersIcon } from '@heroicons/react/24/outline'
 import type { StorybookSlug } from '../../navigation/config'
+import { Button } from '@/components/ui/button'
 import { DevGuidanceInline } from '../../components/DevGuidanceInline'
 import { DevVariantHint } from '../../components/DevVariantHint'
 import { StorybookShell } from '../../components/StorybookShell'
@@ -20,6 +21,7 @@ import {
   SeccionesPage,
   TablasEstiloNotionPage,
   TablasPageFull,
+  WizardProgresoPage,
 } from './StorybookExtended'
 
 function Panel({
@@ -241,6 +243,25 @@ function Botones() {
             </button>
           </div>
         </Panel>
+        <Panel title="shadcn/ui · Button" subtitle="Componentes canónicos del prototipo (misma marca)">
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button">Guardar cambios</Button>
+            <Button type="button" className="gap-2">
+              <PlusIcon className="h-4 w-4" />
+              Nuevo registro
+            </Button>
+            <Button type="button" variant="outline">
+              Cancelar
+            </Button>
+            <Button type="button" variant="destructive" className="gap-2">
+              <TrashIcon className="h-4 w-4" />
+              Eliminar
+            </Button>
+            <Button type="button" variant="ghost" size="icon" aria-label="Editar">
+              <PencilSquareIcon className="h-5 w-5" />
+            </Button>
+          </div>
+        </Panel>
         <Panel title="Secundarios y neutros" subtitle="Cancelar, borde y texto">
           <div className="flex flex-wrap items-center gap-4">
             <button
@@ -438,6 +459,7 @@ const STORYBOOK_REGISTRY: Record<StorybookSlug, FC> = {
   'date-pickers': DatePickersPage,
   notificaciones: NotificacionesPage,
   modales: ModalesPageFull,
+  'wizard-progreso': WizardProgresoPage,
 }
 
 export function StorybookView({ slug }: { slug: StorybookSlug }) {
