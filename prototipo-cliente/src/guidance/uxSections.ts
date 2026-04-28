@@ -220,6 +220,21 @@ export const UX_ROLES: GuidanceContent = g({
   referenciaReglasCursor: `${REF_UXUI_MDC} Ver \`.cursor/rules/filament-resource-permisos.mdc\`.`,
 })
 
+export const UX_PERMISOS_CATALOGO: GuidanceContent = g({
+  title: 'Catálogo de permisos (referencia)',
+  summary:
+    'Listado de solo lectura del vocabulario Acción:Modelo para revisar etiquetas y grupos antes de cablear API.',
+  bulletsCuandoUsar: [
+    'Mostrar clave técnica en tipografía secundaria para alinear con Shield y soporte.',
+    'Agrupar por dominio (Usuarios, Catálogos, etc.) para escanear sin fatiga.',
+  ],
+  bulletsEvitar: [
+    'No confundir esta vista con la asignación al rol: la edición vive en "Editar rol".',
+  ],
+  equivalenteFilament: ['Listado de `Permission` o documentación autogenerada en admin.'],
+  referenciaReglasCursor: `${REF_UXUI_MDC} Ver \`.cursor/rules/filament-resource-permisos.mdc\`.`,
+})
+
 export const UX_BAJAS_PENDIENTES: GuidanceContent = g({
   title: 'Solicitudes de baja pendientes',
   summary: 'Cola de revisión: fechas futuras, motivo y departamento; acciones que pueden cambiar el estado del proceso.',

@@ -16,6 +16,15 @@ const LABEL_PUESTO_GRAL: Record<string, string> = {
   '2': 'Analista',
 }
 
+function nombrePorId(rows: CatalogPlainRow[] | undefined, id: string): string {
+  if (!rows?.length || !id) {
+    return ''
+  }
+  const row = rows.find((r) => String(r.id) === String(id))
+
+  return row?.nombre !== undefined ? String(row.nombre) : ''
+}
+
 /** Valores de formulario (todos string; checkboxes como 'true' | 'false'). */
 export type CatalogFormState = Record<string, string>
 
@@ -67,21 +76,33 @@ function nextNumericId(rows: CatalogPlainRow[]): string {
 export function catalogFormStateToPlainRow(
   tab: CatalogTabId,
   form: CatalogFormState,
-  options: { id: string | null; existingRows: CatalogPlainRow[] },
+  options: {
+    id: string | null
+    existingRows: CatalogPlainRow[]
+    /** Filas por pestaña para etiquetas desnormalizadas (p. ej. tras alta rápida). */
+    rowsByTab?: Partial<Record<CatalogTabId, CatalogPlainRow[]>>
+  },
 ): CatalogPlainRow {
   const id = options.id ?? nextNumericId(options.existingRows)
+  const rb = options.rowsByTab
 
   switch (tab) {
     case 'regiones':
       return { id, nombre: form.nombre?.trim() ?? '' }
     case 'departamentos': {
       const dgId = form.departamento_general_id ?? ''
+      const dgLabel =
+        dgId && rb?.departamentos_generales?.length
+          ? nombrePorId(rb.departamentos_generales, dgId)
+          : dgId
+            ? (LABEL_DEP_GRAL[dgId] ?? '')
+            : ''
       return {
         id,
         nombre: form.nombre?.trim() ?? '',
         empresa: form.empresa ?? 'Acme SA',
         departamento_general_id: dgId,
-        departamento_general: dgId ? (LABEL_DEP_GRAL[dgId] ?? '') : '',
+        departamento_general: dgLabel,
       }
     }
     case 'departamentos_generales':
@@ -94,11 +115,17 @@ export function catalogFormStateToPlainRow(
       }
     case 'areas': {
       const agId = form.area_general_id ?? ''
+      const agLabel =
+        agId && rb?.areas_generales?.length
+          ? nombrePorId(rb.areas_generales, agId)
+          : agId
+            ? (LABEL_AREA_GRAL[agId] ?? '')
+            : ''
       return {
         id,
         nombre: form.nombre?.trim() ?? '',
         area_general_id: agId,
-        area_general: agId ? (LABEL_AREA_GRAL[agId] ?? '') : '',
+        area_general: agLabel,
       }
     }
     case 'areas_generales':
@@ -112,13 +139,25 @@ export function catalogFormStateToPlainRow(
     case 'puestos': {
       const pgId = form.puesto_general_id ?? ''
       const agId = form.area_general_id ?? ''
+      const pgLabel =
+        pgId && rb?.puestos_generales?.length
+          ? nombrePorId(rb.puestos_generales, pgId)
+          : pgId
+            ? (LABEL_PUESTO_GRAL[pgId] ?? '')
+            : ''
+      const agLabel =
+        agId && rb?.areas_generales?.length
+          ? nombrePorId(rb.areas_generales, agId)
+          : agId
+            ? (LABEL_AREA_GRAL[agId] ?? '')
+            : ''
       return {
         id,
         nombre: form.nombre?.trim() ?? '',
         puesto_general_id: pgId,
-        puesto_general: pgId ? (LABEL_PUESTO_GRAL[pgId] ?? '') : '',
+        puesto_general: pgLabel,
         area_general_id: agId,
-        area_general: agId ? (LABEL_AREA_GRAL[agId] ?? '') : '',
+        area_general: agLabel,
         ocupacion: form.ocupacion?.trim() ?? '',
       }
     }

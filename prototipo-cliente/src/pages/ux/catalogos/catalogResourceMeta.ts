@@ -33,6 +33,15 @@ export type FormField =
       type: 'select'
       options: { value: string; label: string }[]
       helperText?: string
+      /**
+       * Alta en contexto (modal). Solo se define si el catálogo destino cumple
+       * `canQuickCreateIntoCatalog` (≤3 campos en el formulario de destino).
+       */
+      quickCreate?: {
+        targetTab: CatalogTabId
+        linkLabel: string
+        modalHeading: string
+      }
     }
   | { key: string; label: string; type: 'checkbox'; helperText?: string }
 
@@ -115,6 +124,11 @@ export const CATALOG_RESOURCE_META: Record<CatalogTabId, CatalogResourceMeta> = 
         label: 'Departamento general',
         type: 'select',
         options: [{ value: '', label: '— Ninguno —' }, ...OPT_DEP_GRAL],
+        quickCreate: {
+          targetTab: 'departamentos_generales',
+          linkLabel: 'Crear nuevo tipo general de departamento…',
+          modalHeading: 'Nuevo tipo general de departamento',
+        },
       },
     ],
   },
@@ -143,6 +157,11 @@ export const CATALOG_RESOURCE_META: Record<CatalogTabId, CatalogResourceMeta> = 
         label: 'Área general',
         type: 'select',
         options: OPT_AREA_GRAL,
+        quickCreate: {
+          targetTab: 'areas_generales',
+          linkLabel: 'Crear nueva área general…',
+          modalHeading: 'Nueva área general',
+        },
       },
     ],
   },
@@ -171,12 +190,22 @@ export const CATALOG_RESOURCE_META: Record<CatalogTabId, CatalogResourceMeta> = 
         label: 'Puesto general',
         type: 'select',
         options: OPT_PUESTO_GRAL,
+        quickCreate: {
+          targetTab: 'puestos_generales',
+          linkLabel: 'Crear nuevo puesto general…',
+          modalHeading: 'Nuevo puesto general',
+        },
       },
       {
         key: 'area_general_id',
         label: 'Área general',
         type: 'select',
         options: OPT_AREA_GRAL,
+        quickCreate: {
+          targetTab: 'areas_generales',
+          linkLabel: 'Crear nueva área general…',
+          modalHeading: 'Nueva área general',
+        },
       },
       {
         key: 'ocupacion',

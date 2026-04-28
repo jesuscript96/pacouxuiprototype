@@ -34,7 +34,8 @@ const UX_LINKS: {
     parent: 'Documentos Corporativos',
     to: paths.documentos,
   },
-  { label: 'Roles y permisos', parent: 'Configuración', to: paths.roles },
+  { label: 'Roles', parent: 'Configuración', to: paths.roles },
+  { label: 'Permisos (catálogo)', parent: 'Configuración', to: paths.permisos },
 ]
 
 function groupByParent() {
@@ -224,7 +225,15 @@ export function ClienteShell() {
                         <NavLink
                           key={item.to}
                           to={item.to}
-                          className={navClass}
+                          end
+                          className={({ isActive }) =>
+                            navClass({
+                              isActive:
+                                isActive ||
+                                (item.to === paths.roles &&
+                                  location.pathname.startsWith('/ux/roles')),
+                            })
+                          }
                         >
                           <span className="truncate">{item.label}</span>
                         </NavLink>

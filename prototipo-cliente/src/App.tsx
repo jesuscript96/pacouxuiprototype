@@ -17,6 +17,9 @@ import { EmpresaWizardPage } from './pages/ux/catalogos/empresas/EmpresaWizardPa
 import { ListEmpresasPage } from './pages/ux/catalogos/empresas/ListEmpresasPage'
 import { ColaboradoresUxPage } from './pages/ux/colaboradores/ColaboradoresUxPage'
 import { DocumentosPage } from './pages/ux/documentos/DocumentosPage'
+import { PermisosUxPage } from './pages/ux/permisos/PermisosUxPage'
+import { RbacLayout } from './pages/ux/roles/RbacLayout'
+import { RolEditUxPage } from './pages/ux/roles/RolEditUxPage'
 import { RolesUxPage } from './pages/ux/roles/RolesUxPage'
 import { SolicitudesPage } from './pages/ux/solicitudes/SolicitudesPage'
 import { TableauPlaceholderPage } from './pages/ux/TableauPlaceholderPage'
@@ -60,7 +63,11 @@ export default function App() {
           <Route path="/ux/cartas-sua" element={<CartasSuaPage />} />
           <Route path="/ux/colaboradores" element={<ColaboradoresUxPage />} />
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
-          <Route path="/ux/roles" element={<RolesUxPage />} />
+          <Route element={<RbacLayout />}>
+            <Route path="/ux/roles" element={<RolesUxPage />} />
+            <Route path="/ux/roles/edit" element={<RolEditUxPage />} />
+          </Route>
+          <Route path="/ux/permisos" element={<PermisosUxPage />} />
           <Route path="/ux/bajas-colaboradores" element={<BajasColaboradoresPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/inicio" replace />} />

@@ -29,6 +29,7 @@ import {
   CATALOG_RESOURCE_META,
   CATALOG_TABLE_COLUMNS,
   type CatalogPlainRow,
+  type CatalogResourceMeta,
   type CatalogTabId,
 } from './catalogResourceMeta'
 import { UX_CATALOGOS } from '../../../guidance/uxSections'
@@ -89,7 +90,32 @@ export function CatalogosPage() {
   const [form, setForm] = useState<CatalogFormState>({})
   const [deleteId, setDeleteId] = useState<string | null>(null)
 
-  const meta = CATALOG_RESOURCE_META[active]
+  const meta = useMemo((): CatalogResourceMeta => {
+    const base = CATALOG_RESOURCE_META[active]
+
+    return {
+      ...base,
+      formFields: base.formFields.map((field) => {
+        if (field.type !== 'select' || !('quickCreate' in field) || !field.quickCreate) {
+          return field
+        }
+        const t = field.quickCreate.targetTab
+        const rows = rowsMap[t]
+        const opts = rows.map((r) => ({
+          value: String(r.id),
+          label: String(r.nombre ?? r.id),
+        }))
+        if (field.key === 'departamento_general_id') {
+          return {
+            ...field,
+            options: [{ value: '', label: '— Ninguno —' }, ...opts],
+          }
+        }
+
+        return { ...field, options: opts }
+      }),
+    }
+  }, [active, rowsMap])
 
   const filteredRows = useMemo(() => {
     return rowsMap[active].filter((r) => rowMatchesQuery(r, search))
@@ -142,6 +168,7 @@ export function CatalogosPage() {
     const newRow = catalogFormStateToPlainRow(active, form, {
       id: panelMode === 'edit' ? editingId : null,
       existingRows: rowsMap[active],
+      rowsByTab: rowsMap,
     })
     setRowsMap((m) => {
       const list = m[active]
@@ -155,6 +182,18 @@ export function CatalogosPage() {
     })
     closePanel()
   }, [active, closePanel, editingId, form, panelMode, rowsMap])
+
+  const onQuickCreateSaved = useCallback(
+    (payload: { targetTab: CatalogTabId; row: CatalogPlainRow; parentSelectKey: string }) => {
+      const { targetTab, row, parentSelectKey } = payload
+      setRowsMap((m) => ({
+        ...m,
+        [targetTab]: [...m[targetTab], row],
+      }))
+      setForm((f) => ({ ...f, [parentSelectKey]: String(row.id) }))
+    },
+    [],
+  )
 
   const confirmDelete = useCallback(() => {
     if (!deleteId) {
@@ -330,6 +369,8 @@ export function CatalogosPage() {
           form={form}
           onChange={updateForm}
           readOnly={panelMode === 'view'}
+          rowsMap={rowsMap}
+          onQuickCreateSaved={onQuickCreateSaved}
         />
       </CrudSlideOver>
 
