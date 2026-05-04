@@ -42,7 +42,10 @@ export function UxWizardProgress({ steps, currentIndex, onStepClick, visitedIndi
         />
       </div>
 
-      <ol className="flex w-full items-center justify-between gap-0 px-0.5 sm:px-1" role="list">
+      <ol
+        className="flex w-full flex-wrap items-center justify-center gap-y-2 px-0.5 sm:px-1"
+        role="list"
+      >
         {steps.map((step, index) => {
           const isActive = index === currentIndex
           const isDone = index < currentIndex
@@ -50,12 +53,12 @@ export function UxWizardProgress({ steps, currentIndex, onStepClick, visitedIndi
           const emphasized = isDone || (touched && !isActive)
 
           return (
-            <li key={step.id} className="flex min-w-0 flex-1 items-center last:flex-[0_0_auto]">
+            <li key={step.id} className="flex shrink-0 items-center">
               {index > 0 ? (
                 <div
                   aria-hidden
                   className={clsx(
-                    'mx-0.5 h-1 min-w-[6px] flex-1 rounded-full transition-colors duration-300 sm:mx-1 sm:min-w-[10px]',
+                    'mx-2 h-1 w-10 shrink-0 rounded-full transition-colors duration-300 sm:mx-3 sm:w-14',
                     currentIndex >= index ? 'bg-[#3148c8]' : 'bg-slate-200',
                   )}
                 />
