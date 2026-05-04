@@ -1,4 +1,5 @@
 import { CheckIcon } from '@heroicons/react/24/outline'
+import type { CSSProperties } from 'react'
 
 import { clsx } from '@/utils/cn'
 
@@ -17,18 +18,43 @@ type Props = {
 }
 
 /**
- * Progreso de asistente por pasos: trazo conector + bolitas y texto bajo cada paso.
- * Pensado para wizards extensos (p. ej. alta de empresa); clicable en cada paso.
+ * Genera `grid-template-columns`: pasos en `auto`, conectores `80px` o `1fr` según cantidad de pasos.
+ * · 2–3 pasos: conectores fijos 80px · 4+ pasos: conectores flexibles (1fr)
  */
-export function UxWizardProgress({ steps, currentIndex, onStepClick, visitedIndices }: Props) {
+function gridTemplateColumnsForSteps(count: number): string {
+  if (count <= 0) {
+    return 'auto'
+  }
+  return Array.from({ length: count }, (_, i) =>
+    i === 0
+      ? 'auto'
+      : count > 3
+        ? '1fr auto'
+        : '80px auto',
+  ).join(' ')
+}
+
+/**
+ * Progreso de asistente: barra superior a ancho completo + grid de pasos con trazos entre círculos.
+ */
+export function UxWizardProgress({
+  steps,
+  currentIndex,
+  onStepClick,
+  visitedIndices,
+}: Props) {
   const total = steps.length
   const pct =
     total <= 1 ? 100 : Math.round((currentIndex / Math.max(1, total - 1)) * 100)
 
+  const gridStyle: CSSProperties = {
+    gridTemplateColumns: gridTemplateColumnsForSteps(total),
+  }
+
   return (
     <div className="w-full space-y-4">
       <div
-        className="relative h-1.5 overflow-hidden rounded-full bg-slate-200/90"
+        className="relative h-1 overflow-hidden rounded-full bg-slate-200/90"
         role="progressbar"
         aria-valuemin={0}
         aria-valuemax={100}
@@ -43,32 +69,23 @@ export function UxWizardProgress({ steps, currentIndex, onStepClick, visitedIndi
       </div>
 
       <ol
-        className="flex w-full flex-wrap items-center justify-center gap-y-2 px-0.5 sm:px-1"
-        role="list"
+        className="grid w-full list-none items-center gap-0 px-0.5 sm:px-1"
+        style={gridStyle}
       >
-        {steps.map((step, index) => {
+        {steps.flatMap((step, index) => {
           const isActive = index === currentIndex
           const isDone = index < currentIndex
           const touched = visitedIndices?.has(index) ?? false
           const emphasized = isDone || (touched && !isActive)
 
-          return (
-            <li key={step.id} className="flex shrink-0 items-center">
-              {index > 0 ? (
-                <div
-                  aria-hidden
-                  className={clsx(
-                    'mx-2 h-1 w-10 shrink-0 rounded-full transition-colors duration-300 sm:mx-3 sm:w-14',
-                    currentIndex >= index ? 'bg-[#3148c8]' : 'bg-slate-200',
-                  )}
-                />
-              ) : null}
+          const stepItem = (
+            <li key={`step-${step.id}`} className="flex min-w-0 justify-center">
               <button
                 type="button"
                 onClick={() => onStepClick(index)}
                 aria-current={isActive ? 'step' : undefined}
                 className={clsx(
-                  'group flex max-w-full shrink-0 flex-col items-center gap-2 rounded-xl px-1 py-1.5 outline-none transition-colors sm:px-2',
+                  'group flex max-w-full flex-col items-center gap-2 rounded-xl px-1 py-1.5 outline-none transition-colors sm:px-2',
                   'focus-visible:ring-2 focus-visible:ring-[#3148c8]/35',
                   !isActive && 'hover:bg-slate-50',
                 )}
@@ -107,6 +124,27 @@ export function UxWizardProgress({ steps, currentIndex, onStepClick, visitedIndi
               </button>
             </li>
           )
+
+          if (index === steps.length - 1) {
+            return [stepItem]
+          }
+
+          const connItem = (
+            <li
+              key={`conn-${index}`}
+              aria-hidden
+              className="flex min-h-[4px] min-w-0 items-center self-center"
+            >
+              <div
+                className={clsx(
+                  'h-1 w-full min-w-0 rounded-full transition-colors duration-300',
+                  currentIndex >= index + 1 ? 'bg-[#3148c8]' : 'bg-slate-200',
+                )}
+              />
+            </li>
+          )
+
+          return [stepItem, connItem]
         })}
       </ol>
     </div>
