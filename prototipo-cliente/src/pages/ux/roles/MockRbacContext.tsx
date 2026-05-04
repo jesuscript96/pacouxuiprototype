@@ -17,6 +17,8 @@ type MockRbacValue = {
   permissions: typeof MOCK_PERMISSIONS
   roles: MockRole[]
   updateRole: (id: string, patch: Partial<Omit<MockRole, 'id'>>) => void
+  /** Devuelve el id generado. */
+  addRole: (input: Omit<MockRole, 'id' | 'userCount'> & { id?: string }) => string
 }
 
 const MockRbacContext = createContext<MockRbacValue | null>(null)
@@ -32,13 +34,34 @@ export function MockRbacProvider({ children }: { children: ReactNode }) {
     )
   }, [])
 
+  const addRole = useCallback(
+    (input: Omit<MockRole, 'id' | 'userCount'> & { id?: string }) => {
+      const id =
+        input.id ??
+        `rol-${typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : String(Date.now())}`
+      setRoles((list) => [
+        ...list,
+        {
+          id,
+          name: input.name,
+          description: input.description,
+          permissionIds: [...input.permissionIds],
+          userCount: 0,
+        },
+      ])
+      return id
+    },
+    [],
+  )
+
   const value = useMemo(
     () => ({
       permissions: MOCK_PERMISSIONS,
       roles,
       updateRole,
+      addRole,
     }),
-    [roles, updateRole],
+    [roles, updateRole, addRole],
   )
 
   return (

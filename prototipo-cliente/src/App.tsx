@@ -18,6 +18,7 @@ import { ListEmpresasPage } from './pages/ux/catalogos/empresas/ListEmpresasPage
 import { ColaboradoresUxPage } from './pages/ux/colaboradores/ColaboradoresUxPage'
 import { DocumentosPage } from './pages/ux/documentos/DocumentosPage'
 import { PermisosUxPage } from './pages/ux/permisos/PermisosUxPage'
+import { CrearRolWizardPage } from './pages/ux/roles/CrearRolWizardPage'
 import { RbacLayout } from './pages/ux/roles/RbacLayout'
 import { RolEditUxPage } from './pages/ux/roles/RolEditUxPage'
 import { RolesUxPage } from './pages/ux/roles/RolesUxPage'
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
           <Route element={<RbacLayout />}>
             <Route path="/ux/roles" element={<RolesUxPage />} />
+            <Route path="/ux/roles/nueva" element={<CrearRolWizardPage />} />
             <Route path="/ux/roles/edit" element={<RolEditUxPage />} />
           </Route>
           <Route path="/ux/permisos" element={<PermisosUxPage />} />

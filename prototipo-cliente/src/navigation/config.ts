@@ -77,6 +77,7 @@ export const paths = {
   colaboradores: '/ux/colaboradores',
   vacantes: '/ux/vacantes',
   roles: '/ux/roles',
+  rolesNueva: '/ux/roles/nueva',
   /** Query `role` con id del rol mock (ver `INITIAL_MOCK_ROLES`). */
   rolesEditar: (roleId: string) =>
     `/ux/roles/edit?role=${encodeURIComponent(roleId)}`,

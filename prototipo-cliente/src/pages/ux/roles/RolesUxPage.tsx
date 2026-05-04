@@ -1,6 +1,6 @@
 import { ShieldCheckIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { FilamentListToolbar } from '../../../components/ux/FilamentListToolbar'
 import { MockFilamentTable } from '../../../components/ux/MockFilamentTable'
 import { UX_ROLES } from '../../../guidance/uxSections'
@@ -18,6 +18,8 @@ function countBadge(n: number) {
 }
 
 export function RolesUxPage() {
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { roles } = useMockRbac()
   const [search, setSearch] = useState('')
   const [toast, setToast] = useState<string | null>(null)
@@ -25,6 +27,15 @@ export function RolesUxPage() {
   useEffect(() => {
     document.title = 'Roles · Prototipo Cliente'
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get('creado') !== '1') {
+      return
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- sincronizar toast con `?creado=1` (mismo patrón que empresas)
+    setToast('Rol creado (solo prototipo, en memoria).')
+    setSearchParams({}, { replace: true })
+  }, [searchParams, setSearchParams])
 
   useEffect(() => {
     if (!toast) {
@@ -58,9 +69,9 @@ export function RolesUxPage() {
     [filtered],
   )
 
-  const noopNew = useCallback(() => {
-    setToast('Crear rol nuevo no está implementado en el prototipo.')
-  }, [])
+  const openCrearRol = useCallback(() => {
+    navigate(paths.rolesNueva)
+  }, [navigate])
 
   return (
     <div className="space-y-6">
@@ -73,7 +84,7 @@ export function RolesUxPage() {
       {toast ? (
         <div
           role="status"
-          className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950"
+          className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-900"
         >
           {toast}
         </div>
@@ -90,12 +101,12 @@ export function RolesUxPage() {
       <div className="space-y-4">
         <FilamentListToolbar
           heading="Roles"
-          newLabel="Nuevo rol"
-          onNew={noopNew}
+          newLabel="Crear rol"
+          onNew={openCrearRol}
           searchValue={search}
           onSearchChange={setSearch}
           searchPlaceholder="Buscar por nombre o descripción…"
-          hint="Editar enlaza a la pantalla de permisos por rol. El catálogo completo está en Permisos (menú)."
+          hint="Crear rol abre el asistente en dos pasos. Editar usa la vista simple de permisos. Catálogo en Permisos (menú)."
         />
         <MockFilamentTable
           columns={[

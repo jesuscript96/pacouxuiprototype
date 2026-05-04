@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { protoInputClass, protoLabelClass } from '../../../components/ux/protoFormStyles'
 import type { MockRole } from '../../../data/mockRbac'
-import { groupPermissionsByGroup } from '../../../data/mockRbac'
+import { groupPermissionsByGroup, permissionRowLabel } from '../../../data/mockRbac'
 import { paths } from '../../../navigation/config'
 import { useMockRbac } from './MockRbacContext'
 import { UxPageChrome } from './UxPageChrome'
@@ -126,7 +126,7 @@ function RolEditForm({ role }: { role: MockRole }) {
                           />
                           <span className="min-w-0">
                             <span className="block text-sm font-medium text-slate-900">
-                              {p.label}
+                              {permissionRowLabel(p)}
                             </span>
                             <span className="mt-0.5 block font-mono text-[11px] text-slate-500">
                               {p.name}

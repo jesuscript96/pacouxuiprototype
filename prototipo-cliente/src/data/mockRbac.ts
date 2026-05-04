@@ -87,3 +87,93 @@ export function groupPermissionsByGroup(
   }
   return m
 }
+
+/** Empresas mock solo para el desplegable del wizard de rol (prototipo). */
+export const MOCK_EMPRESAS_ROL: { value: string; label: string; slug: string }[] = [
+  { value: '', label: 'Sin especificar (opcional)', slug: '' },
+  {
+    value: 'acme',
+    label: 'Empresa demo · Acme SA',
+    slug: 'acme',
+  },
+  {
+    value: 'ejemplo',
+    label: 'Empresa Ejemplo S.A. de C.V.',
+    slug: 'empresa_ejemplo_s_a_de_c_v',
+  },
+]
+
+export type RolPredefinidoId = '' | 'solo-lectura' | 'consultor' | 'rh' | 'admin'
+
+export type RolPredefinidoOption = {
+  id: RolPredefinidoId
+  label: string
+  permissionIds: string[]
+}
+
+const permisosSoloLectura = MOCK_PERMISSIONS.filter(
+  (p) => p.name.startsWith('View'),
+).map((p) => p.id)
+
+/** Plantillas para precargar permisos en el paso 2 del wizard. */
+export const ROL_PREDEFINIDOS: RolPredefinidoOption[] = [
+  {
+    id: '',
+    label: 'Sin predefinido',
+    permissionIds: [],
+  },
+  {
+    id: 'solo-lectura',
+    label: 'Solo lectura',
+    permissionIds: permisosSoloLectura,
+  },
+  {
+    id: 'consultor',
+    label: 'Consultor catálogos (similar al rol demo)',
+    permissionIds: permisosConsultor,
+  },
+  {
+    id: 'rh',
+    label: 'RH empresa (similar al rol demo)',
+    permissionIds: permisosRh,
+  },
+  {
+    id: 'admin',
+    label: 'Administrador empresa (todos los permisos)',
+    permissionIds: permisosAdmin,
+  },
+]
+
+/** Etiqueta corta para filas tipo checklist (alineado a Create / View / …). */
+export function permissionRowLabel(p: MockPermission): string {
+  const n = p.name
+  if (n.startsWith('ViewAny:')) {
+    return 'Ver listado'
+  }
+  if (n.startsWith('View:')) {
+    return 'Ver detalle'
+  }
+  if (n.startsWith('Create:')) {
+    return 'Crear'
+  }
+  if (n.startsWith('Update:')) {
+    return 'Editar'
+  }
+  if (n.startsWith('Delete:')) {
+    return 'Eliminar'
+  }
+  if (n.startsWith('Export:')) {
+    return 'Exportar'
+  }
+  return p.label
+}
+
+export function slugifyNombreTecnico(raw: string): string {
+  return raw
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+}
