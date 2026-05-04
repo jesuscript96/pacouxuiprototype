@@ -131,5 +131,55 @@ class AppServiceProvider extends ServiceProvider
 </style>
 HTML
         );
+
+        // BL: Si el grupo del sidebar tiene un ítem activo pero sigue en collapsedGroups (localStorage),
+        // forzar expansión para que siempre se vea la fila resaltada (Filament no lo hace solo con .fi-active).
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn (): string => <<<'HTML'
+<script>
+(function () {
+    function expandActiveSidebarGroups() {
+        var Alpine = window.Alpine;
+        if (!Alpine || typeof Alpine.store !== 'function') {
+            return;
+        }
+        var store;
+        try {
+            store = Alpine.store('sidebar');
+        } catch (e) {
+            return;
+        }
+        if (!store || typeof store.groupIsCollapsed !== 'function' || typeof store.toggleCollapsedGroup !== 'function') {
+            return;
+        }
+        var groups = document.querySelectorAll('.fi-main-sidebar .fi-sidebar-group.fi-active');
+        groups.forEach(function (el) {
+            var label = el.dataset.groupLabel;
+            if (!label) {
+                return;
+            }
+            if (store.groupIsCollapsed(label)) {
+                store.toggleCollapsedGroup(label);
+            }
+            el.classList.remove('fi-collapsed');
+            var items = el.querySelector('.fi-sidebar-group-items');
+            if (items) {
+                items.style.display = '';
+            }
+        });
+    }
+    function scheduleExpand() {
+        queueMicrotask(function () {
+            requestAnimationFrame(expandActiveSidebarGroups);
+        });
+    }
+    document.addEventListener('DOMContentLoaded', scheduleExpand);
+    document.addEventListener('livewire:navigated', scheduleExpand);
+    window.addEventListener('load', scheduleExpand);
+})();
+</script>
+HTML
+        );
     }
 }
