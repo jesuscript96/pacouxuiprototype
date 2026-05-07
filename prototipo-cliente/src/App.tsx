@@ -24,6 +24,7 @@ import { RolEditUxPage } from './pages/ux/roles/RolEditUxPage'
 import { RolesUxPage } from './pages/ux/roles/RolesUxPage'
 import { SolicitudesPage } from './pages/ux/solicitudes/SolicitudesPage'
 import { TableauPlaceholderPage } from './pages/ux/TableauPlaceholderPage'
+import { MensajesUxPage } from './pages/ux/mensajes/MensajesUxPage'
 import { VacantesUxPage } from './pages/ux/vacantes/VacantesUxPage'
 
 function StorybookPageWrapper() {
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/ux/cartas-sua" element={<CartasSuaPage />} />
           <Route path="/ux/colaboradores" element={<ColaboradoresUxPage />} />
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
+          <Route path="/ux/mensajes" element={<MensajesUxPage />} />
           <Route element={<RbacLayout />}>
             <Route path="/ux/roles" element={<RolesUxPage />} />
             <Route path="/ux/roles/nueva" element={<CrearRolWizardPage />} />

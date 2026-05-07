@@ -28,6 +28,11 @@ const UX_LINKS: {
   { label: 'Colaboradores', parent: 'Gestión de personal', to: paths.colaboradores },
   { label: 'Bajas', parent: 'Gestión de personal', to: paths.bajas },
   { label: 'Vacantes', parent: 'Reclutamiento', to: paths.vacantes },
+  {
+    label: 'Mensajes',
+    parent: UX_PARENT_LABELS.comunicacion,
+    to: paths.mensajes,
+  },
   { label: 'Cartas SUA', parent: 'Cartas SUA', to: paths.cartasSua },
   {
     label: 'Documentos corporativos',

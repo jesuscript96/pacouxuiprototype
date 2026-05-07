@@ -195,14 +195,31 @@ export const UX_COLABORADORES: GuidanceContent = g({
 
 export const UX_VACANTES: GuidanceContent = g({
   title: 'Vacantes y reclutamiento',
-  summary: 'Pipeline o etapas del proceso de selección con acciones por vacante.',
+  summary:
+    'Listado de vacantes con acciones Ver / Editar / Eliminar. Crear y editar abren un asistente en modal centrado con dos pasos: (1) información estructurada de la vacante—empresa, jornada, modalidad, salario opcional, visibilidad, textos—y (2) constructor del formulario que verá el candidato, con vista previa en rejilla.',
   bulletsCuandoUsar: [
     'Cuando el usuario piensa en “embudo” o estados de vacante más que en tabla plana.',
+    'Wizard en modal cuando el flujo es secuencial (ficha + formulario) sin abandonar el contexto del listado.',
   ],
   bulletsEvitar: [
     'No usar el mismo patrón que catálogos RH si el flujo es temporal y por candidato.',
   ],
   equivalenteFilament: ['Resource con tabs o relation managers según ficha del módulo.'],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
+export const UX_MENSAJES: GuidanceContent = g({
+  title: 'Mensajes internos',
+  summary:
+    'Listado con filtros avanzados y etiquetas (chips) por cada criterio activo. Crear abre un wizard en modal en tres pasos: (1) contenido y opciones de envío con interruptores y cuerpo en texto amplio—en producción irá editor WYSIWYG—, (2) criterios de audiencia combinados con Y con chips de refuerzo, (3) lista de destinatarios donde la selección se alinea con los filtros al avanzar desde el paso 2 y se puede afinar por fila o con “Todos” / “Alinear con filtros”.',
+  bulletsCuandoUsar: [
+    'Cuando el alcance depende de catálogos RH y el usuario necesita ver el impacto antes de enviar.',
+    'Chips de filtros visibles junto al listado para lectura rápida del contexto sin abrir el panel.',
+  ],
+  bulletsEvitar: [
+    'No confundir este prototipo con envío real: no hay API, colas ni permisos de empresa.',
+  ],
+  equivalenteFilament: ['Resource de mensajes o campaña con wizard Filament y relación a destinatarios.'],
   referenciaReglasCursor: REF_UXUI_MDC,
 })
 

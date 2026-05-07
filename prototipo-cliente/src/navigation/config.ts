@@ -83,6 +83,7 @@ export const paths = {
     `/ux/roles/edit?role=${encodeURIComponent(roleId)}`,
   permisos: '/ux/permisos',
   bajas: '/ux/bajas-colaboradores',
+  mensajes: '/ux/mensajes',
 } as const
 
 export const UX_PARENT_LABELS = {
@@ -95,6 +96,7 @@ export const UX_PARENT_LABELS = {
   cartasSua: 'Cartas SUA',
   documentos: 'Documentos Corporativos',
   configuracion: 'Configuración',
+  comunicacion: 'Comunicación',
 } as const
 
 export const TABLEAU_SEGMENTS: { segment: string; label: string }[] = [
