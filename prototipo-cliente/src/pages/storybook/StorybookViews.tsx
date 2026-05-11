@@ -23,6 +23,7 @@ import {
   TablasPageFull,
   WizardProgresoPage,
 } from './StorybookExtended'
+import { StorybookVozColaboradorPage } from './StorybookVozColaborador'
 
 function Panel({
   title,
@@ -460,6 +461,7 @@ const STORYBOOK_REGISTRY: Record<StorybookSlug, FC> = {
   notificaciones: NotificacionesPage,
   modales: ModalesPageFull,
   'wizard-progreso': WizardProgresoPage,
+  'voz-colaborador': StorybookVozColaboradorPage,
 }
 
 export function StorybookView({ slug }: { slug: StorybookSlug }) {

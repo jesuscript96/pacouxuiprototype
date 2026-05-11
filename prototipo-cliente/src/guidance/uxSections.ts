@@ -223,6 +223,24 @@ export const UX_MENSAJES: GuidanceContent = g({
   referenciaReglasCursor: REF_UXUI_MDC,
 })
 
+export const UX_VOZ_COLABORADOR: GuidanceContent = g({
+  title: 'Voz del colaborador (comentarios)',
+  summary:
+    'Bandeja tipo inbox: columna izquierda con filtros compactos y lista de solicitudes; panel derecho con cabecera del hilo, prioridad/categoría/asignación, conversación colaborador↔admin con adjuntos (imagen, video, documento) y compositor con validación cliente (máx. 3 archivos, 20 MB, tipos permitidos). Sin backend: los envíos se reflejan solo en estado local del prototipo.',
+  bulletsCuandoUsar: [
+    'Cuando el admin de empresa debe atender quejas, sugerencias o felicitaciones con varias rondas de mensajes.',
+    'Mantener visible el contexto del colaborador (empresa, ubicación, categoría) mientras se responde.',
+  ],
+  bulletsEvitar: [
+    'No asumir que los adjuntos mock son URLs persistentes: en producción vendrán de almacenamiento firmado.',
+    'No confundir este módulo con el chat interno corporativo (otro diseño y entidades).',
+  ],
+  equivalenteFilament: [
+    'Resource de comentarios / “voz del colaborador” con vista detalle y timeline de mensajes en panel Cliente.',
+  ],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
 export const UX_ROLES: GuidanceContent = g({
   title: 'Roles y permisos',
   summary: 'Matrices o listas de permisos agrupados; cambios sensibles que requieren confirmación clara.',

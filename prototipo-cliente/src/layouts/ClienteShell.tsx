@@ -1,6 +1,7 @@
 import { Bars3Icon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { paths, STORYBOOK_PAGES, UX_PARENT_LABELS, type StorybookSlug } from '../navigation/config'
 import { clsx } from '../utils/cn'
 
@@ -32,6 +33,11 @@ const UX_LINKS: {
     label: 'Mensajes',
     parent: UX_PARENT_LABELS.comunicacion,
     to: paths.mensajes,
+  },
+  {
+    label: 'Voz del colaborador',
+    parent: UX_PARENT_LABELS.comunicacion,
+    to: paths.vozColaborador,
   },
   { label: 'Cartas SUA', parent: 'Cartas SUA', to: paths.cartasSua },
   {
@@ -282,7 +288,9 @@ export function ClienteShell() {
         </header>
 
         <main className="proto-fi-main min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-6 sm:px-6 lg:px-8">
-          <Outlet />
+          <TooltipProvider>
+            <Outlet />
+          </TooltipProvider>
         </main>
       </div>
     </div>

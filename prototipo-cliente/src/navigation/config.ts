@@ -21,6 +21,7 @@ export type StorybookSlug =
   | 'notificaciones'
   | 'modales'
   | 'wizard-progreso'
+  | 'voz-colaborador'
 
 export type StorybookEntry = {
   slug: StorybookSlug
@@ -49,6 +50,7 @@ export const STORYBOOK_PAGES: StorybookEntry[] = [
   { slug: 'notificaciones', label: 'Notificaciones', sort: 18 },
   { slug: 'modales', label: 'Modales', sort: 19 },
   { slug: 'wizard-progreso', label: 'Progreso wizard', sort: 20 },
+  { slug: 'voz-colaborador', label: 'Voz del colaborador', sort: 21 },
 ]
 
 export function isStorybookSlug(s: string): s is StorybookSlug {
@@ -84,6 +86,7 @@ export const paths = {
   permisos: '/ux/permisos',
   bajas: '/ux/bajas-colaboradores',
   mensajes: '/ux/mensajes',
+  vozColaborador: '/ux/voz-colaborador',
 } as const
 
 export const UX_PARENT_LABELS = {
