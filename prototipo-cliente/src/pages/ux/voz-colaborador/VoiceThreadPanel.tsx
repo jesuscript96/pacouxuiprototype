@@ -33,7 +33,7 @@ export function VoiceThreadPanel({
   onReopen,
 }: Props) {
   const [lightbox, setLightbox] = useState<{ url: string; kind: 'image' | 'video' } | null>(null)
-  const [detailOpen, setDetailOpen] = useState(false)
+  const [detailOpen, setDetailOpen] = useState(true)
   const messagesScrollRef = useRef<HTMLDivElement>(null)
 
   const bubbles = useMemo(() => {
@@ -44,7 +44,7 @@ export function VoiceThreadPanel({
   }, [thread, localReplies])
 
   useEffect(() => {
-    setDetailOpen(false)
+    setDetailOpen(true)
   }, [thread?.id])
 
   /** Chat anclado al último mensaje. */
