@@ -8,6 +8,7 @@ import {
   PaperClipIcon,
   PencilSquareIcon,
   TrashIcon,
+  UserGroupIcon,
 } from '@heroicons/react/24/outline'
 
 import { Button } from '@/components/ui/button'
@@ -28,6 +29,7 @@ export type TableIconActionTone =
   | 'duplicate'
   | 'send'
   | 'attach'
+  | 'segment'
 
 const IconByTone: Record<TableIconActionTone, ComponentType<{ className?: string }>> = {
   view: EyeIcon,
@@ -37,6 +39,7 @@ const IconByTone: Record<TableIconActionTone, ComponentType<{ className?: string
   duplicate: DocumentDuplicateIcon,
   send: PaperAirplaneIcon,
   attach: PaperClipIcon,
+  segment: UserGroupIcon,
 }
 
 export type TableIconAction = {

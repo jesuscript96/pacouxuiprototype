@@ -39,6 +39,11 @@ const UX_LINKS: {
     parent: UX_PARENT_LABELS.comunicacion,
     to: paths.vozColaborador,
   },
+  {
+    label: 'Temas de Voz',
+    parent: UX_PARENT_LABELS.comunicacion,
+    to: paths.temasVoz,
+  },
   { label: 'Cartas SUA', parent: 'Cartas SUA', to: paths.cartasSua },
   {
     label: 'Documentos corporativos',

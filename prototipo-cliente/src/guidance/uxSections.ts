@@ -223,6 +223,27 @@ export const UX_MENSAJES: GuidanceContent = g({
   referenciaReglasCursor: REF_UXUI_MDC,
 })
 
+export const UX_TEMAS_VOZ: GuidanceContent = g({
+  title: 'Catálogo de Temas de Voz',
+  summary:
+    'Listado simple para mantener el catálogo de temas que el colaborador elige al enviar un comentario de voz. Filtro por empresa antes de la tabla (Todas / Solo globales / empresa específica) y popup en dos pasos para crear/editar: paso 1 (Tema y descripción) y paso 2 (Segmentación: asignación a empresa + lista de destinatarios con buscador y master toggle). El shortcut «Segmentar» del menú de fila abre el wizard directo en el paso 2.',
+  bulletsCuandoUsar: [
+    'Cuando el catálogo es pequeño y el usuario alterna entre temas globales y exclusivos por empresa sin perder el contexto del listado.',
+    'Filtro por empresa visible y persistente: al elegir empresa, ver los temas exclusivos de esa empresa junto con los globales que también aplican.',
+    'Wizard de dos pasos cuando el contenido (Tema/Descripción) y la segmentación (Empresa + Destinatarios) son responsabilidades distintas y conviene mostrarlas por separado.',
+    'Acceso directo al paso 2 desde la acción «Segmentar» del menú de fila para ajustar destinatarios sin tocar el contenido del tema.',
+  ],
+  bulletsEvitar: [
+    'No confundir «exclusivo de empresa» con un permiso: la exclusividad solo limita en qué empresa aparece el tema en la app.',
+    'No permitir guardar sin nombre, con el interruptor activo y empresa vacía, o sin al menos un destinatario seleccionado.',
+    'No mezclar este catálogo con el de categorías o estados de la bandeja de Voz del colaborador.',
+  ],
+  equivalenteFilament: [
+    'Resource Filament con `Tables\\Table` + `Wizard` de dos pasos en modal (`Modal`) y validación con `->required()` en Form Request o el Resource. La acción de «Segmentar» equivale a un `Action::make()` que abre el modal directamente sobre el paso 2.',
+  ],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
 export const UX_VOZ_COLABORADOR: GuidanceContent = g({
   title: 'Voz del colaborador (comentarios)',
   summary:

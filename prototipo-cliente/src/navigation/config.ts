@@ -87,6 +87,7 @@ export const paths = {
   bajas: '/ux/bajas-colaboradores',
   mensajes: '/ux/mensajes',
   vozColaborador: '/ux/voz-colaborador',
+  temasVoz: '/ux/temas-voz',
 } as const
 
 export const UX_PARENT_LABELS = {

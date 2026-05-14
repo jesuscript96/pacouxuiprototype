@@ -26,6 +26,7 @@ import { SolicitudesPage } from './pages/ux/solicitudes/SolicitudesPage'
 import { TableauPlaceholderPage } from './pages/ux/TableauPlaceholderPage'
 import { MensajesUxPage } from './pages/ux/mensajes/MensajesUxPage'
 import { VozColaboradorUxPage } from './pages/ux/voz-colaborador/VozColaboradorUxPage'
+import { TemasVozUxPage } from './pages/ux/temas-voz/TemasVozUxPage'
 import { VacantesUxPage } from './pages/ux/vacantes/VacantesUxPage'
 
 function StorybookPageWrapper() {
@@ -68,6 +69,7 @@ export default function App() {
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
           <Route path="/ux/mensajes" element={<MensajesUxPage />} />
           <Route path="/ux/voz-colaborador" element={<VozColaboradorUxPage />} />
+          <Route path="/ux/temas-voz" element={<TemasVozUxPage />} />
           <Route element={<RbacLayout />}>
             <Route path="/ux/roles" element={<RolesUxPage />} />
             <Route path="/ux/roles/nueva" element={<CrearRolWizardPage />} />
