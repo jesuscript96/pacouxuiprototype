@@ -28,6 +28,11 @@ const UX_LINKS: {
   },
   { label: 'Colaboradores', parent: 'Gestión de personal', to: paths.colaboradores },
   { label: 'Bajas', parent: 'Gestión de personal', to: paths.bajas },
+  {
+    label: 'Cursos',
+    parent: UX_PARENT_LABELS.capacitacion,
+    to: paths.cursos,
+  },
   { label: 'Vacantes', parent: 'Reclutamiento', to: paths.vacantes },
   {
     label: 'Mensajes',
@@ -246,6 +251,8 @@ export function ClienteShell() {
                             navClass({
                               isActive:
                                 isActive ||
+                                (item.to === paths.cursos &&
+                                  location.pathname.startsWith('/ux/cursos')) ||
                                 (item.to === paths.roles &&
                                   location.pathname.startsWith('/ux/roles')),
                             })

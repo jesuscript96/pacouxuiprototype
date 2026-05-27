@@ -193,6 +193,26 @@ export const UX_COLABORADORES: GuidanceContent = g({
   referenciaReglasCursor: `${REF_UXUI_MDC} Ver también \`.cursor/rules/arquitecture-users-first.mdc\` para users vs colaboradores.`,
 })
 
+export const UX_CURSOS: GuidanceContent = g({
+  title: 'Cursos y capacitación',
+  summary:
+    'CRUD de cursos con KPIs, reportes y wizard amplio para configurar contenido, evaluaciones, segmentación, notificaciones, certificados y datos STPS. Todo opera con mock data en memoria dentro del prototipo React.',
+  bulletsCuandoUsar: [
+    'Wizard cuando el alta combina información básica, contenido por módulos/lecciones, evaluación y reglas administrativas.',
+    'Shortcuts visibles para “Reporte histórico” y “Nuevo curso” porque son los dos caminos frecuentes del usuario RH.',
+    'Tabla principal compacta con menú de tres puntos para acciones secundarias: reportes, duplicar, desactivar y eliminar.',
+  ],
+  bulletsEvitar: [
+    'No mezclar el reporte histórico dentro del formulario de edición: es una consulta operativa independiente.',
+    'No simular carga real de archivos en el prototipo; las portadas y recursos se representan como nombres/tipos mock.',
+    'No esconder acciones sensibles sin confirmación: desactivar y eliminar deben pedir contexto antes de cambiar la lista.',
+  ],
+  equivalenteFilament: [
+    'Resource con `Table`, acciones de fila, `Wizard` en formulario y páginas/acciones separadas para reportes exportables.',
+  ],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
 export const UX_VACANTES: GuidanceContent = g({
   title: 'Vacantes y reclutamiento',
   summary:

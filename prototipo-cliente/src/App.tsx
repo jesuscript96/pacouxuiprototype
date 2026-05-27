@@ -16,6 +16,8 @@ import { CatalogosPage } from './pages/ux/catalogos/CatalogosPage'
 import { EmpresaWizardPage } from './pages/ux/catalogos/empresas/EmpresaWizardPage'
 import { ListEmpresasPage } from './pages/ux/catalogos/empresas/ListEmpresasPage'
 import { ColaboradoresUxPage } from './pages/ux/colaboradores/ColaboradoresUxPage'
+import { CursosUxPage } from './pages/ux/cursos/CursosUxPage'
+import { CursoWizardPage } from './pages/ux/cursos/CursoWizardPage'
 import { DocumentosPage } from './pages/ux/documentos/DocumentosPage'
 import { PermisosUxPage } from './pages/ux/permisos/PermisosUxPage'
 import { CrearRolWizardPage } from './pages/ux/roles/CrearRolWizardPage'
@@ -66,6 +68,8 @@ export default function App() {
           <Route path="/ux/documentos-corporativos" element={<DocumentosPage />} />
           <Route path="/ux/cartas-sua" element={<CartasSuaPage />} />
           <Route path="/ux/colaboradores" element={<ColaboradoresUxPage />} />
+          <Route path="/ux/cursos" element={<CursosUxPage />} />
+          <Route path="/ux/cursos/nuevo" element={<CursoWizardPage />} />
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
           <Route path="/ux/mensajes" element={<MensajesUxPage />} />
           <Route path="/ux/voz-colaborador" element={<VozColaboradorUxPage />} />
