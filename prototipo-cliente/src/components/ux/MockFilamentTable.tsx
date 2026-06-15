@@ -70,11 +70,14 @@ export function MockFilamentTable({
 
 function cnHeaderActions(extra?: string): string {
   return (
-    'w-px whitespace-nowrap px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 ' +
+    'sticky right-0 z-20 w-px whitespace-nowrap bg-slate-50 px-4 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500 shadow-[-8px_0_8px_-8px_rgba(15,23,42,0.12)] ' +
     (extra ?? '')
   )
 }
 
 function cnCellActions(extra?: string): string {
-  return 'whitespace-nowrap px-4 py-3 text-right text-slate-800 ' + (extra ?? '')
+  return (
+    'sticky right-0 z-10 whitespace-nowrap bg-white px-4 py-3 text-right text-slate-800 shadow-[-8px_0_8px_-8px_rgba(15,23,42,0.12)] ' +
+    (extra ?? '')
+  )
 }

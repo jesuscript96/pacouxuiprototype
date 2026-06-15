@@ -337,3 +337,80 @@ export const UX_BAJAS_HISTORIAL: GuidanceContent = g({
   equivalenteFilament: ['Vista de solo lectura o edición muy restringida por permiso.'],
   referenciaReglasCursor: `${REF_UXUI_MDC} Arquitectura users/colaboradores.`,
 })
+
+export const UX_ENCUESTAS: GuidanceContent = g({
+  title: 'Encuestas (centro unificado)',
+  summary:
+    'Consolida en pestañas lo que el legacy tenía disperso: listado de encuestas, categorías y monitoreo de envíos. Reduce navegación y duplicación de filtros.',
+  bulletsCuandoUsar: [
+    'Una sola página con `UxTabs` cuando los sub-listados comparten dominio (encuestas) y perfil de usuario.',
+    'KPIs arriba para dar contexto de participación antes de entrar al detalle.',
+  ],
+  bulletsEvitar: [
+    'No abrir una pantalla completa para cada micro-acción (categorías y editar envío van en slide-over/modal).',
+  ],
+  equivalenteFilament: ['Resource de Encuesta con Tabs/Relation managers y acciones en modal.'],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
+export const UX_ENCUESTAS_CATEGORIAS: GuidanceContent = g({
+  title: 'Categorías de encuesta',
+  summary: 'Catálogo simple (nombre + empresa) para organizar encuestas; CRUD en slide-over sin perder el listado.',
+  bulletsCuandoUsar: [
+    'Slide-over para alta/edición rápida manteniendo el contexto de la tabla.',
+    'Mostrar "Sin asignar" cuando la categoría no está ligada a una empresa.',
+  ],
+  bulletsEvitar: [
+    'No permitir borrar categorías con encuestas ligadas sin aviso (catálogo en uso).',
+  ],
+  equivalenteFilament: ['Resource catálogo + `CatalogSlideOver` con permiso por acción.'],
+  referenciaReglasCursor: `${REF_UXUI_MDC} Ver \`.cursor/rules/proteccion-registros-en-uso.mdc\`.`,
+})
+
+export const UX_ENCUESTAS_ENVIADAS: GuidanceContent = g({
+  title: 'Encuestas enviadas (monitoreo)',
+  summary:
+    'Estadística e histórico de campañas: enviados / contestados / no contestados, vigencia y estado. Editar un envío reprograma sin reconstruir la encuesta.',
+  bulletsCuandoUsar: [
+    'Badges y barras de participación para lectura rápida del avance.',
+    'Editar envío en modal acotado (fechas y vigencia), no el constructor completo.',
+  ],
+  bulletsEvitar: [
+    'No mezclar el diseño del cuestionario con la operación del envío.',
+  ],
+  equivalenteFilament: ['Tabla con columnas calculadas + acción de reprogramación en modal.'],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
+export const UX_ENCUESTA_BUILDER: GuidanceContent = g({
+  title: 'Constructor de encuestas (estilo Typeform)',
+  summary:
+    'Lienzo de 3 paneles: lista de bloques, editor con vista previa en vivo (una pregunta a la vez) y ajustes contextuales del bloque. Bloques de bienvenida, sección ponderada, NPS y agradecimiento.',
+  bulletsCuandoUsar: [
+    'Vista previa fiel a lo que verá quien responde, para validar tono y longitud.',
+    'Ajustes del bloque a la derecha (obligatoria, ponderación, dimensión) que cambian según el tipo.',
+    'Pantallas de bienvenida y agradecimiento como bloques del propio formulario.',
+  ],
+  bulletsEvitar: [
+    'No encerrar la construcción en un wizard rígido; el orden de bloques debe ser libre.',
+    'No mostrar branching/lógica visual todavía (evolución futura, fuera de alcance).',
+  ],
+  equivalenteFilament: ['Builder Livewire con repeater de bloques + preview, o paquete de form builder.'],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
+export const UX_NOM035: GuidanceContent = g({
+  title: 'Cuestionarios NOM-035',
+  summary:
+    'Guías oficiales precargadas (solo lectura), con envío segmentado, reporte de riesgo descargable y control de participación de destinatarios en una misma página.',
+  bulletsCuandoUsar: [
+    'Las guías son de referencia: ver escala y valores, no editarlas.',
+    'Unificar envíos, destinatarios y reporte para evitar saltar entre módulos.',
+  ],
+  bulletsEvitar: [
+    'No permitir editar las preguntas oficiales de la norma.',
+    'No exponer resultados individuales si la aplicación debe ser confidencial.',
+  ],
+  equivalenteFilament: ['Guías como datos semilla de solo lectura + acciones de envío y reporte.'],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})

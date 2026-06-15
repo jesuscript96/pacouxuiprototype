@@ -2,7 +2,9 @@ import {
   AcademicCapIcon,
   ArrowLeftIcon,
   DocumentDuplicateIcon,
+  PaperClipIcon,
   PlusIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline'
 import type React from 'react'
 import { useCallback, useMemo, useState } from 'react'
@@ -27,6 +29,7 @@ import {
 } from './cursosMockData'
 import type {
   CursoContenidoTipo,
+  CursoArchivoAdjunto,
   CursoLeccion,
   CursoModulo,
   CursoPregunta,
@@ -465,6 +468,9 @@ function ModuleEditor({
               titulo: 'Slide 1',
               descripcion: '',
               recursos: ['imagen'],
+              adjuntos: [],
+              urlExterna: '',
+              youtubeUrl: '',
             },
           ],
           recursos: ['imagen'],
@@ -537,6 +543,9 @@ function LessonEditor({
           titulo: 'Slide 1',
           descripcion: '',
           recursos: ['imagen'],
+          adjuntos: [],
+          urlExterna: '',
+          youtubeUrl: '',
         },
       ],
       recursos: ['imagen'],
@@ -670,6 +679,9 @@ function TopicEditor({
       titulo: `Slide ${tema.slides.length + 1}`,
       descripcion: '',
       recursos: ['imagen'],
+      adjuntos: [],
+      urlExterna: '',
+      youtubeUrl: '',
     }
     updateTema(setDraft, moduloId, leccionId, tema.id, {
       slides: [...tema.slides, nueva],
@@ -745,6 +757,29 @@ function SlideEditor({
   slideIndex: number
   setDraft: React.Dispatch<React.SetStateAction<CursoWizardDraft>>
 }) {
+  const handleAttachFiles = useCallback(
+    (files: FileList | null) => {
+      if (!files?.length) {
+        return
+      }
+
+      const adjuntos: CursoArchivoAdjunto[] = Array.from(files).map((archivo) => ({
+        id: nextId('adj'),
+        nombre: archivo.name,
+        tipo: archivo.type || 'application/octet-stream',
+        tamano: archivo.size,
+        url: URL.createObjectURL(archivo),
+        archivo,
+      }))
+
+      updateSlide(setDraft, moduloId, leccionId, temaId, slide.id, {
+        adjuntos: [...slide.adjuntos, ...adjuntos],
+        recursos: Array.from(new Set([...slide.recursos, ...adjuntos.map(tipoRecursoParaArchivo)])),
+      })
+    },
+    [leccionId, moduloId, setDraft, slide.adjuntos, slide.id, slide.recursos, temaId],
+  )
+
   return (
     <div className="rounded-lg border border-slate-100 bg-slate-50/70 p-3">
       <div className="grid gap-3 lg:grid-cols-[1fr_1.5fr]">
@@ -774,38 +809,217 @@ function SlideEditor({
           />
         </div>
       </div>
+      <div className="mt-3 rounded-xl border border-indigo-200 bg-indigo-50/60 p-3">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">Archivos de esta slide</p>
+            <p className="mt-0.5 text-xs text-slate-600">
+              Selecciona uno o varios archivos. Se aceptan imágenes, videos, audios, PDF y cualquier otro formato.
+            </p>
+          </div>
+          <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-[#3148c8] px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#263a9e]">
+            <PaperClipIcon className="h-4 w-4" />
+            Seleccionar archivos
+            <input
+              type="file"
+              className="sr-only"
+              multiple
+              onChange={(event) => {
+                handleAttachFiles(event.target.files)
+                event.currentTarget.value = ''
+              }}
+            />
+          </label>
+        </div>
+
+        {slide.adjuntos.length > 0 ? (
+          <div className="mt-3 grid gap-3 lg:grid-cols-2">
+            {slide.adjuntos.map((adjunto) => (
+              <AttachmentPreview
+                key={adjunto.id}
+                adjunto={adjunto}
+                onRemove={() =>
+                  updateSlide(setDraft, moduloId, leccionId, temaId, slide.id, {
+                    adjuntos: slide.adjuntos.filter((item) => item.id !== adjunto.id),
+                  })
+                }
+              />
+            ))}
+          </div>
+        ) : (
+          <label className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-indigo-200 bg-white/70 px-4 py-8 text-center text-sm text-slate-500 hover:bg-white">
+            <PaperClipIcon className="h-7 w-7 text-indigo-400" />
+            <span className="mt-2 font-semibold text-slate-700">Haz clic para adjuntar archivos</span>
+            <span className="mt-1 text-xs">La previsualización aparecerá aquí.</span>
+            <input
+              type="file"
+              className="sr-only"
+              multiple
+              onChange={(event) => {
+                handleAttachFiles(event.target.files)
+                event.currentTarget.value = ''
+              }}
+            />
+          </label>
+        )}
+      </div>
+
       <div className="mt-3">
         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Recursos de esta slide
+          Tipos de contenido detectados
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {RECURSOS.map((recurso) => {
             const active = slide.recursos.includes(recurso.value)
             return (
-              <button
+              <span
                 key={recurso.value}
-                type="button"
                 className={cn(
-                  'rounded-full px-2.5 py-1 text-xs font-semibold ring-1 transition',
+                  'rounded-full px-2.5 py-1 text-xs font-semibold ring-1',
                   active
                     ? 'bg-indigo-50 text-indigo-800 ring-indigo-200'
-                    : 'bg-white text-slate-500 ring-slate-200 hover:bg-slate-50',
+                    : 'bg-white text-slate-400 ring-slate-200',
                 )}
-                onClick={() => {
-                  const recursos = active
-                    ? slide.recursos.filter((item) => item !== recurso.value)
-                    : [...slide.recursos, recurso.value]
-                  updateSlide(setDraft, moduloId, leccionId, temaId, slide.id, { recursos })
-                }}
               >
                 {recurso.label}
-              </button>
+              </span>
             )
           })}
         </div>
       </div>
+
+      <div className="mt-3 grid gap-3 lg:grid-cols-2">
+        <div>
+          <label className={protoLabelClass}>URL externa</label>
+          <input
+            className={protoInputClass}
+            value={slide.urlExterna}
+            placeholder="https://..."
+            onChange={(event) =>
+              updateSlide(setDraft, moduloId, leccionId, temaId, slide.id, {
+                urlExterna: event.target.value,
+                recursos: event.target.value.trim()
+                  ? Array.from(new Set([...slide.recursos, 'url']))
+                  : slide.recursos,
+              })
+            }
+          />
+        </div>
+        <div>
+          <label className={protoLabelClass}>Video YouTube</label>
+          <input
+            className={protoInputClass}
+            value={slide.youtubeUrl}
+            placeholder="https://youtube.com/watch?v=..."
+            onChange={(event) =>
+              updateSlide(setDraft, moduloId, leccionId, temaId, slide.id, {
+                youtubeUrl: event.target.value,
+                recursos: event.target.value.trim()
+                  ? Array.from(new Set([...slide.recursos, 'youtube']))
+                  : slide.recursos,
+              })
+            }
+          />
+        </div>
+      </div>
     </div>
   )
+}
+
+function AttachmentPreview({
+  adjunto,
+  onRemove,
+}: {
+  adjunto: CursoArchivoAdjunto
+  onRemove: () => void
+}) {
+  const isImage = adjunto.tipo.startsWith('image/')
+  const isVideo = adjunto.tipo.startsWith('video/')
+  const isAudio = adjunto.tipo.startsWith('audio/')
+  const isPdf = adjunto.tipo === 'application/pdf'
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="flex items-start justify-between gap-2 border-b border-slate-100 px-3 py-2">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-slate-900">{adjunto.nombre}</p>
+          <p className="text-xs text-slate-500">
+            {adjunto.tipo || 'Tipo desconocido'} · {formatBytes(adjunto.tamano)}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+          aria-label={`Quitar ${adjunto.nombre}`}
+          onClick={onRemove}
+        >
+          <XMarkIcon className="h-4 w-4" />
+        </button>
+      </div>
+
+      <div className="bg-slate-50 p-3">
+        {isImage ? (
+          <img
+            src={adjunto.url}
+            alt={adjunto.nombre}
+            className="max-h-56 w-full rounded-lg object-contain"
+          />
+        ) : isVideo ? (
+          <video src={adjunto.url} className="max-h-56 w-full rounded-lg bg-black" controls />
+        ) : isAudio ? (
+          <audio src={adjunto.url} className="w-full" controls />
+        ) : isPdf ? (
+          <object
+            data={adjunto.url}
+            type="application/pdf"
+            className="h-56 w-full rounded-lg border border-slate-200 bg-white"
+          >
+            <a className="text-sm font-semibold text-[#3148c8]" href={adjunto.url} target="_blank" rel="noreferrer">
+              Abrir PDF
+            </a>
+          </object>
+        ) : (
+          <div className="rounded-lg border border-dashed border-slate-200 bg-white px-4 py-8 text-center">
+            <PaperClipIcon className="mx-auto h-6 w-6 text-slate-400" />
+            <p className="mt-2 text-sm text-slate-600">
+              Este tipo de archivo no tiene preview embebido.
+            </p>
+            <a
+              href={adjunto.url}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-2 inline-flex text-sm font-semibold text-[#3148c8]"
+            >
+              Abrir archivo
+            </a>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function tipoRecursoParaArchivo(adjunto: CursoArchivoAdjunto): CursoContenidoTipo {
+  if (adjunto.tipo.startsWith('image/')) {
+    return 'imagen'
+  }
+  if (adjunto.tipo.startsWith('video/')) {
+    return 'video'
+  }
+  if (adjunto.tipo.startsWith('audio/')) {
+    return 'audio'
+  }
+  return 'archivo'
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) {
+    return `${bytes} B`
+  }
+  if (bytes < 1024 * 1024) {
+    return `${(bytes / 1024).toFixed(1)} KB`
+  }
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
 function QuizSettings({

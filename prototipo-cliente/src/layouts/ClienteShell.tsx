@@ -33,6 +33,16 @@ const UX_LINKS: {
     parent: UX_PARENT_LABELS.capacitacion,
     to: paths.cursos,
   },
+  {
+    label: 'Encuestas',
+    parent: UX_PARENT_LABELS.encuestas,
+    to: paths.encuestas,
+  },
+  {
+    label: 'NOM-035',
+    parent: UX_PARENT_LABELS.encuestas,
+    to: paths.nom035,
+  },
   { label: 'Vacantes', parent: 'Reclutamiento', to: paths.vacantes },
   {
     label: 'Mensajes',
@@ -253,6 +263,10 @@ export function ClienteShell() {
                                 isActive ||
                                 (item.to === paths.cursos &&
                                   location.pathname.startsWith('/ux/cursos')) ||
+                                (item.to === paths.encuestas &&
+                                  location.pathname.startsWith('/ux/encuestas')) ||
+                                (item.to === paths.nom035 &&
+                                  location.pathname.startsWith('/ux/nom-035')) ||
                                 (item.to === paths.roles &&
                                   location.pathname.startsWith('/ux/roles')),
                             })

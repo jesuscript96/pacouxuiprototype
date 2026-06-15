@@ -18,6 +18,10 @@ import { ListEmpresasPage } from './pages/ux/catalogos/empresas/ListEmpresasPage
 import { ColaboradoresUxPage } from './pages/ux/colaboradores/ColaboradoresUxPage'
 import { CursosUxPage } from './pages/ux/cursos/CursosUxPage'
 import { CursoWizardPage } from './pages/ux/cursos/CursoWizardPage'
+import { EncuestasUxPage } from './pages/ux/encuestas/EncuestasUxPage'
+import { EncuestaBuilderPage } from './pages/ux/encuestas/EncuestaBuilderPage'
+import { Nom035UxPage } from './pages/ux/nom035/Nom035UxPage'
+import { Nom035GuiaPage } from './pages/ux/nom035/Nom035GuiaPage'
 import { DocumentosPage } from './pages/ux/documentos/DocumentosPage'
 import { PermisosUxPage } from './pages/ux/permisos/PermisosUxPage'
 import { CrearRolWizardPage } from './pages/ux/roles/CrearRolWizardPage'
@@ -70,6 +74,11 @@ export default function App() {
           <Route path="/ux/colaboradores" element={<ColaboradoresUxPage />} />
           <Route path="/ux/cursos" element={<CursosUxPage />} />
           <Route path="/ux/cursos/nuevo" element={<CursoWizardPage />} />
+          <Route path="/ux/encuestas" element={<EncuestasUxPage />} />
+          <Route path="/ux/encuestas/nueva" element={<EncuestaBuilderPage />} />
+          <Route path="/ux/encuestas/:id/editar" element={<EncuestaBuilderPage />} />
+          <Route path="/ux/nom-035" element={<Nom035UxPage />} />
+          <Route path="/ux/nom-035/guias/:id" element={<Nom035GuiaPage />} />
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
           <Route path="/ux/mensajes" element={<MensajesUxPage />} />
           <Route path="/ux/voz-colaborador" element={<VozColaboradorUxPage />} />

@@ -12,11 +12,23 @@ export type CursoContenidoTipo =
 
 export type CursoPreguntaTipo = 'unica' | 'multiple'
 
+export type CursoArchivoAdjunto = {
+  id: string
+  nombre: string
+  tipo: string
+  tamano: number
+  url: string
+  archivo?: File
+}
+
 export type CursoSlide = {
   id: string
   titulo: string
   descripcion: string
   recursos: CursoContenidoTipo[]
+  adjuntos: CursoArchivoAdjunto[]
+  urlExterna: string
+  youtubeUrl: string
 }
 
 export type CursoTema = {
