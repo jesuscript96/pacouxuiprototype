@@ -282,6 +282,24 @@ export const UX_VOZ_COLABORADOR: GuidanceContent = g({
   referenciaReglasCursor: REF_UXUI_MDC,
 })
 
+export const UX_CHATS: GuidanceContent = g({
+  title: 'Chats (revisión de conversaciones)',
+  summary:
+    'Vista tipo herramienta de chat convencional: columna izquierda con filtro de empresa, chips Todos/Individuales/Grupos/No leídos/Archivados y lista de conversaciones (avatar, último mensaje, hora, no leídos); panel derecho más ancho con header del chat (participantes, botón de info ampliable), conversación con adjuntos (imagen, video, documento), reacciones y compositor mock. Sin backend: envíos y archivado viven solo en estado local.',
+  bulletsCuandoUsar: [
+    'Cuando el admin necesita revisar conversaciones de colaboradores de su(s) empresa(s) sin ser participante.',
+    'Individuales y grupos en la misma lista, distinguidos por avatar/etiqueta y filtrables con chips (patrón WhatsApp).',
+  ],
+  bulletsEvitar: [
+    'No confundir con Voz del colaborador (bandeja de solicitudes con estados/atención): aquí no hay estados de atención.',
+    'No asumir que los adjuntos mock son URLs persistentes: en producción vendrán de almacenamiento firmado.',
+  ],
+  equivalenteFilament: [
+    'Página Livewire dedicada (no Resource CRUD) con lista de conversaciones + panel de mensajes en tiempo real.',
+  ],
+  referenciaReglasCursor: REF_UXUI_MDC,
+})
+
 export const UX_ROLES: GuidanceContent = g({
   title: 'Roles y permisos',
   summary: 'Matrices o listas de permisos agrupados; cambios sensibles que requieren confirmación clara.',

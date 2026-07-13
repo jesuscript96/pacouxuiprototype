@@ -31,6 +31,7 @@ import { RolesUxPage } from './pages/ux/roles/RolesUxPage'
 import { SolicitudesPage } from './pages/ux/solicitudes/SolicitudesPage'
 import { TableauPlaceholderPage } from './pages/ux/TableauPlaceholderPage'
 import { MensajesUxPage } from './pages/ux/mensajes/MensajesUxPage'
+import { ChatsUxPage } from './pages/ux/chats/ChatsUxPage'
 import { VozColaboradorUxPage } from './pages/ux/voz-colaborador/VozColaboradorUxPage'
 import { TemasVozUxPage } from './pages/ux/temas-voz/TemasVozUxPage'
 import { VacantesUxPage } from './pages/ux/vacantes/VacantesUxPage'
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/ux/nom-035/guias/:id" element={<Nom035GuiaPage />} />
           <Route path="/ux/vacantes" element={<VacantesUxPage />} />
           <Route path="/ux/mensajes" element={<MensajesUxPage />} />
+          <Route path="/ux/chats" element={<ChatsUxPage />} />
           <Route path="/ux/voz-colaborador" element={<VozColaboradorUxPage />} />
           <Route path="/ux/temas-voz" element={<TemasVozUxPage />} />
           <Route element={<RbacLayout />}>

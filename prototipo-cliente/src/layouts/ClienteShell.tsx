@@ -50,6 +50,11 @@ const UX_LINKS: {
     to: paths.mensajes,
   },
   {
+    label: 'Chats',
+    parent: UX_PARENT_LABELS.comunicacion,
+    to: paths.chats,
+  },
+  {
     label: 'Voz del colaborador',
     parent: UX_PARENT_LABELS.comunicacion,
     to: paths.vozColaborador,

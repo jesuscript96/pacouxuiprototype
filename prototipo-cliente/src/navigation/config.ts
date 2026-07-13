@@ -93,6 +93,7 @@ export const paths = {
   permisos: '/ux/permisos',
   bajas: '/ux/bajas-colaboradores',
   mensajes: '/ux/mensajes',
+  chats: '/ux/chats',
   vozColaborador: '/ux/voz-colaborador',
   temasVoz: '/ux/temas-voz',
 } as const
